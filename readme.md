@@ -35,8 +35,10 @@ and have fun making computer graphics.
 
 ## References
 
-- some YouTube videos (TODO)
-- Inigo Quilez's SDF page(s) (TODO)
+- some YouTube videos
+  - Sebastian Lague: https://youtu.be/Cp5WWtMoeKg
+  - SimonDev: https://youtu.be/BNZtUB7yhX4
+- Inigo Quilez's SDF page(s)
   - https://iquilezles.org/articles/distfunctions/
 - Markdown cheat sheet: https://www.markdownguide.org/cheat-sheet/
 
