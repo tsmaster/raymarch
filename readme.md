@@ -13,6 +13,7 @@ and have fun making computer graphics.
   - cylinder
   - skydome
   - torus
+  - teapot?
 - boolean composition
   - union
   - difference
@@ -20,12 +21,23 @@ and have fun making computer graphics.
 - preludes for submodules (e.g. geom)
 - documentation
 - materials
+  - plastic
+  - metal (reflection)
+  - checkerboard
+  - wood (requires noise)
+  - glass (refraction)
 - lights
+- shadows
+- camera
+- image output
+- simplex(?) noise
+- colors
 
 ## References
 
 - some YouTube videos (TODO)
-- inigo's SDF page(s) (TODO)
+- Inigo Quilez's SDF page(s) (TODO)
+  - https://iquilezles.org/articles/distfunctions/
 - Markdown cheat sheet: https://www.markdownguide.org/cheat-sheet/
 
 
