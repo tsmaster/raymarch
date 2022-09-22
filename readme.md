@@ -26,6 +26,7 @@ and have fun making computer graphics.
 
 - some YouTube videos (TODO)
 - inigo's SDF page(s) (TODO)
+- Markdown cheat sheet: https://www.markdownguide.org/cheat-sheet/
 
 
 ## Dev Log
