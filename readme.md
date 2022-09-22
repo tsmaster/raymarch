@@ -42,6 +42,7 @@ and have fun making computer graphics.
   - Code Parade: https://youtu.be/svLzmFuSBhk
 - Inigo Quilez's SDF page(s)
   - https://iquilezles.org/articles/distfunctions/
+  - SDF of a line segment: https://youtu.be/PMltMdi1Wzg
   - SDF of a box: https://youtu.be/62-pRVZuS5c
 - Markdown cheat sheet: https://www.markdownguide.org/cheat-sheet/
 
