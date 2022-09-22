@@ -1,13 +1,9 @@
-========================================
-Big Dice Games Rust Raymarcher
-========================================
+# Big Dice Games Rust Raymarcher
 
 This is a simple raymarcher, built as an exercise to teach myself Rust
 and have fun making computer graphics.
 
------------------------------------
-TODO
------------------------------------
+## TODO
 
 - Actually raymarch
 - Define scenes in JSON
@@ -26,20 +22,16 @@ TODO
 - materials
 - lights
 
------------------------------------
-References
------------------------------------
+## References
+
 - some YouTube videos (TODO)
 - inigo's SDF page(s) (TODO)
 
 
------------------------------------
-Dev Log
------------------------------------
+## Dev Log
 
-....................
-September 22, 2022
-....................
+### September 22, 2022
+
 Set up project.
 
 Made structs for Vec3f, Sphere and Z+Plane.
