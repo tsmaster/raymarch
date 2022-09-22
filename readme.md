@@ -38,8 +38,11 @@ and have fun making computer graphics.
 - some YouTube videos
   - Sebastian Lague: https://youtu.be/Cp5WWtMoeKg
   - SimonDev: https://youtu.be/BNZtUB7yhX4
+  - Art of Code: https://youtu.be/PGtv-dBi2wE
+  - Code Parade: https://youtu.be/svLzmFuSBhk
 - Inigo Quilez's SDF page(s)
   - https://iquilezles.org/articles/distfunctions/
+  - SDF of a box: https://youtu.be/62-pRVZuS5c
 - Markdown cheat sheet: https://www.markdownguide.org/cheat-sheet/
 
 
