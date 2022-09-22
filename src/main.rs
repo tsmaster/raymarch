@@ -1,3 +1,9 @@
+use image::ColorType;
+use image::codecs::png::PngEncoder;
+use image::ImageEncoder;
+use std::fs::File;
+use std::io::{Error, ErrorKind};
+
 mod math;
 mod geom;
 
@@ -34,4 +40,21 @@ fn main() {
 
     let s_dist = s.dist(&v);
     println!("sphere dist: {}", s_dist);
+}
+
+fn write_image(filename: &str, pixels: &[u8], bounds: (usize, usize))
+	       -> Result<(), std::io::Error>
+{
+    let output = File::create(filename)?;
+    let encoder = PngEncoder::new(output);
+
+    let encode_result = encoder.write_image(pixels,
+					    bounds.0 as u32,
+					    bounds.1 as u32,
+					    ColorType::Rgb8);
+
+    match encode_result {
+	Ok(_) => Ok(()),
+	Err(e) => Err(Error::new(ErrorKind::Other, format!("png encode error: {}", e)))
+    }
 }
