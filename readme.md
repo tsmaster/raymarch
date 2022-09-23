@@ -5,13 +5,11 @@ and have fun making computer graphics.
 
 ## TODO
 
-- Actually raymarch
 - Define scenes in JSON
 - More geom primitives
   - cube
   - triangle mesh
   - cylinder
-  - skydome
   - torus
   - teapot?
 - boolean composition
@@ -28,10 +26,18 @@ and have fun making computer graphics.
   - glass (refraction)
 - lights
 - shadows
-- camera
-- image output
 - simplex(?) noise
+
+## Done
+
+- Actually raymarch
+- camera
 - colors
+- image output
+- geom primitives
+  - z-plane
+  - sphere
+  - skydome
 
 ## References
 

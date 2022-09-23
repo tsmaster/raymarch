@@ -3,6 +3,7 @@ use image::codecs::png::PngEncoder;
 use image::ImageEncoder;
 use std::fs::File;
 use std::io::{Error, ErrorKind};
+use std::time::{Duration, Instant};
 
 mod bdg_color;
 mod camera;
@@ -18,6 +19,8 @@ use bdg_color::ColorRGB_f;
 use sdf::SDF;
 
 fn main() {
+    let start_time = Instant::now();
+    
     let v = math::Vec3f {
 	x: 0.0,
 	y: 0.0,
@@ -147,9 +150,20 @@ fn main() {
 	pixels[i+2] = c_b.b;
     }
 
+    let render_duration = start_time.elapsed();
+
+    let save_start_time = Instant::now();
+
     write_image("OutImages/test_image.png",
 		&pixels,
 		bounds).expect("error writing image file");
+
+    let save_duration = save_start_time.elapsed();
+    let overall_duration = start_time.elapsed();
+
+    println!("Render time: {:?}", render_duration);
+    println!("Save time:   {:?}", save_duration);
+    println!("Total time:  {:?}", overall_duration);
 }
 
 fn write_image(filename: &str, pixels: &[u8], bounds: (usize, usize))
