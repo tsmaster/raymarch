@@ -31,7 +31,7 @@ and have fun making computer graphics.
   - glass (refraction)
 - lights
 - shadows
-- simplex(?) noise
+- simplex(?) noise https://docs.rs/noise/latest/noise/
 - fog
 - GLTF loading
   - e.g. Kenney.nl's car kit: https://www.kenney.nl/assets/car-kit
