@@ -33,6 +33,9 @@ and have fun making computer graphics.
 - shadows
 - simplex(?) noise
 - fog
+- GLTF loading
+  - e.g. Kenney.nl's car kit: https://www.kenney.nl/assets/car-kit
+  - probably using https://crates.io/crates/gltf
 
 ## Done
 
