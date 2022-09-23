@@ -16,6 +16,11 @@ and have fun making computer graphics.
   - union
   - difference
   - intersection
+- transformations
+  - scale
+  - rotation
+  - translation
+- normals from SDF for shading
 - preludes for submodules (e.g. geom)
 - documentation
 - materials
@@ -27,6 +32,7 @@ and have fun making computer graphics.
 - lights
 - shadows
 - simplex(?) noise
+- fog
 
 ## Done
 
