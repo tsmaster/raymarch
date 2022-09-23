@@ -23,8 +23,8 @@ and have fun making computer graphics.
 - materials
   - plastic
   - metal (reflection)
-  - checkerboard
-  - wood (requires noise)
+  - checkerboard (see RMC p345)
+  - wood (requires noise) (see RMC p350)
   - glass (refraction)
 - lights
 - shadows
