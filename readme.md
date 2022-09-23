@@ -57,3 +57,20 @@ Set up project.
 Made structs for Vec3f, Sphere and Z+Plane.
 
 
+### September 23, 2022
+
+Implemented simple SDF ray march / "sphere cast" rendering.
+
+I make a list of objects that implement the SDF (Signed Distance Field) trait,
+along with a color (this should be a shader, eventually). I walk the scene,
+using the distance to the closest object. If I get within a tolerance, I bail
+out of the walk. If I never bail out, I return None.
+
+The ground plane has a simple checkerboard shader.
+
+If nothing gets hit, I shoot the ray at the sky sphere to get the sky color.
+
+
+
+
+
