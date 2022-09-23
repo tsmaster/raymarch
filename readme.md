@@ -27,7 +27,9 @@ and have fun making computer graphics.
   - plastic
   - metal (reflection)
   - checkerboard (see RMC p345)
-  - wood (requires noise) (see RMC p350)
+  - wood (requires noise) 
+    - see RMC p350
+    - see also https://docs.rs/noise/latest/noise/struct.Cylinders.html
   - glass (refraction)
 - lights
 - shadows
