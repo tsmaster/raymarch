@@ -87,7 +87,16 @@ The ground plane has a simple checkerboard shader.
 
 If nothing gets hit, I shoot the ray at the sky sphere to get the sky color.
 
+![spheres_2022_09_23](https://user-images.githubusercontent.com/72338/192061994-d26847e0-4dfa-4fe7-9975-a72ce24445ae.png)
 
+There's a green rim noticeable on the blue spheres. This is likely due to an 
+error in running out of iterations before getting within the sphere tolerance, 
+we keep taking smaller and smaller steps, but we don't register a collision. 
+This can be fixed by increasing the number of steps and/or loosening the tolerance.
 
-
+There's also green on the horizon, which is a side effect of the sloppy WIP sky sphere, 
+combined with only rendering out a distance of 1000.0 units. Updating the sky sphere
+and/or increasing the render distance would provide more plane out near the horizon.
+Pushing the far boundary would have decreasing returns, while making the sky sphere
+more able to hide this sort of artifact would probably be more effective.
 
