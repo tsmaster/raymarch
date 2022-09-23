@@ -44,6 +44,7 @@ and have fun making computer graphics.
   - https://iquilezles.org/articles/distfunctions/
   - SDF of a line segment: https://youtu.be/PMltMdi1Wzg
   - SDF of a box: https://youtu.be/62-pRVZuS5c
+- RenderMan Companion: https://archive.org/details/rendermancompani00upst/mode/2up
 - Markdown cheat sheet: https://www.markdownguide.org/cheat-sheet/
 
 
