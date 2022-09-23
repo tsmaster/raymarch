@@ -36,6 +36,8 @@ and have fun making computer graphics.
 - GLTF loading
   - e.g. Kenney.nl's car kit: https://www.kenney.nl/assets/car-kit
   - probably using https://crates.io/crates/gltf
+- add colors from XKCD color survey https://blog.xkcd.com/2010/05/03/color-survey-results/
+- material texture support (e.g. for posters, decals)
 
 ## Done
 
