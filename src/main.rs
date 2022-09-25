@@ -33,34 +33,9 @@ fn main() {
 
     println!("using {} threads", num_threads);
     
-    let v = math::Vec3f {
-	x: 0.0,
-	y: 0.0,
-	z: 8.0};
-
     let p = ZPlusPlane {
 	z: 0.0
     };
-
-    let sphere_center = Vec3f {
-	x: 0.0,
-	y: 0.0,
-	z: 2.0
-    };
-    
-    let s = Sphere {
-	center: sphere_center,
-	r: 1.0
-    };
-    
-    println!("Hello, world!");
-    println!("Vec: {:?}", v);
-
-    let p_dist = &p.dist(&v);
-    println!("plane dist: {}", p_dist);
-
-    let s_dist = &s.dist(&v);
-    println!("sphere dist: {}", s_dist);
 
     let camera_posn = Vec3f{
 	x: 10.0,
@@ -114,21 +89,15 @@ fn main() {
 
     let rays_per_chunk = rays.len() / num_threads + 1;
 
-    println!("chunk size: {}", rays_per_chunk);
-
     {
 	let ray_chunks: Vec<&[((usize, usize), Ray)]> =
 	    rays.chunks(rays_per_chunk).collect();
 
-	let rendered_chunk = crossbeam::scope(|spawner| {
-	    //println!("inside crossbeam");
-
+	crossbeam::scope(|spawner| {
 	    // bounded multiple producer channel
 	    let (tx, rx) = bounded(0);
 	    
 	    for (_i, rc) in ray_chunks.into_iter().enumerate() {
-		//println!("preparing thread {}", i);
-
 		// we want an immutable list of objects
 		let obj_copy = &objects;
 
@@ -139,10 +108,10 @@ fn main() {
 		    
 		    //render
 		    for ((x,y),r) in rc {
-			//println!("rendering {},{}", x, y);
-
-			let hit = shoot_ray_at_objects(r, &obj_copy,
-						       &cam, 1000, 10000.0);
+			let hit = shoot_ray_at_objects(r,
+						       &obj_copy,
+						       &cam,
+						       1000, 10000.0);
 
 			// This is a hack to get the ground to be
 			// checkered.  I have not yet written an
@@ -151,6 +120,7 @@ fn main() {
 			    Some((idx, pos)) => {
 				match idx {
 				    0 => shade_checker(pos),
+				    //0 => sky_box.shoot_ray(*r),
 				    _ => obj_copy[idx].1,
 				}
 			    },
@@ -170,9 +140,7 @@ fn main() {
 
 	    for _ri in 0..num_threads {
 		let ret_data = rx.recv().unwrap();
-		//println!("unpacking {}", ri);
 		for ((x, y), c) in ret_data {
-		    //println!("Got {} {} {:?}", x,y,c);
 		    let i = (x + y * bounds.0) * 3;
 		    pixels[i]   = c.r;
 		    pixels[i+1] = c.g;
@@ -180,8 +148,6 @@ fn main() {
 		}
 	    }
 	}).unwrap();
-	
-	println!("rendered chunk: {:?}", rendered_chunk);
     }
 
     let render_duration = start_time.elapsed();
@@ -223,7 +189,7 @@ fn shoot_ray_at_objects(r: &Ray,
 			num_steps: usize,
 			dist: f32) -> Option<(usize, Vec3f)> {
 
-    let tolerance = 1.0e-6;
+    let tolerance = 1.0e-4;
 
     let mut cur_pos = cam.posn;
     let r_step = r.direction.normalized();

@@ -1,6 +1,6 @@
 // math.rs
 
-use std::ops::{Add, Sub};
+use std::ops::{Add, Sub, Mul};
 
 #[derive(Debug, Copy, Clone)]
 pub struct Vec3f {
@@ -95,4 +95,35 @@ pub struct Ray {
 
 pub fn degrees_to_radians(d: f32) -> f32 {
    d * std::f32::consts::PI / 180.0 
+}
+
+pub fn map<T>(v: f32,
+	      i_min: f32, i_max: f32,
+	      o_min: T, o_max: T) -> T
+where
+    T: Mul<f32, Output = T> + Add<T, Output = T> + Sub<T, Output = T> + Copy,
+    f32: Mul<T, Output = T> + Mul<f32, Output = f32>
+{
+    let t = (v - i_min) / (i_max - i_min);
+    o_min + (o_max-o_min) * t
+}
+
+pub fn array_interpolate<T>
+    (t: f32, vals: &[(f32, T)]) -> T
+where
+    T: Mul<f32, Output = T> + Add<T, Output = T> + Sub<T, Output = T> + Copy,
+    f32: Mul<T, Output = T> + Mul<f32, Output = f32>
+{
+    for i in 0 .. vals.len()-1 {
+	let j = i + 1;
+
+	let ti = vals[i].0;
+	let tj = vals[j].0;
+
+	if (ti <= t) && (tj > t) {
+	    return map(t, ti, tj, vals[i].1, vals[j].1);
+	}
+    }
+
+    panic!("trying to interpolate value {}, but range is {} to {}", t, vals[0].0, vals[vals.len()-1].0);
 }

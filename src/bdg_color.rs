@@ -2,6 +2,9 @@
 //
 // provides RGB colors 0.0-255.0
 
+use std::ops::{Add, Sub, Mul};
+
+
 #[derive(Debug, Copy, Clone)]
 pub struct ColorRgbF {
     pub r: f32,
@@ -21,6 +24,52 @@ impl ColorRgbF {
     pub const GRAY_50: ColorRgbF = ColorRgbF { r: 128.0, g: 128.0, b: 128.0 };
     pub const WHITE: ColorRgbF = ColorRgbF { r: 255.0, g: 255.0, b: 255.0 };
 }
+
+impl Add for ColorRgbF {
+    type Output = Self;
+    fn add(self, o:Self) -> Self {
+	Self {
+	    r: self.r + o.r,
+	    g: self.g + o.g,
+	    b: self.b + o.b
+	}
+    }
+}
+
+impl Sub for ColorRgbF {
+    type Output = Self;
+    fn sub(self, o:Self) -> Self {
+	Self {
+	    r: self.r - o.r,
+	    g: self.g - o.g,
+	    b: self.b - o.b
+	}
+    }
+}
+
+impl Mul<f32> for ColorRgbF {
+    type Output = Self;
+    fn mul(self, s:f32) -> Self {
+	Self {
+	    r: self.r * s,
+	    g: self.g * s,
+	    b: self.b * s
+	}
+    }
+}
+
+impl Mul<ColorRgbF> for f32 {
+    type Output = ColorRgbF;
+    fn mul(self, c:ColorRgbF) -> ColorRgbF {
+	ColorRgbF {
+	    r: self * c.r,
+	    g: self * c.g,
+	    b: self * c.b
+	}
+    }
+}
+
+
 
 impl ColorRgbF {
     pub fn to_rgb8(self) -> ColorRgb8 {
