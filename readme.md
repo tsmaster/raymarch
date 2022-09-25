@@ -54,6 +54,7 @@ and have fun making computer graphics.
   - z-plane
   - sphere
   - skydome
+- multi-threading
 
 ## References
 
