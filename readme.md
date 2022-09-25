@@ -156,3 +156,6 @@ write a Python script to run the program a number of times with
 different numbers of threads to see if running exactly matching the
 number of CPUs gives optimal performance.
 
+![spheres_2022_09_24_a](https://user-images.githubusercontent.com/72338/192127540-92fe52ca-f3ae-4065-b2a3-2b0bef150101.png)
+
+
