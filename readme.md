@@ -25,6 +25,9 @@ and have fun making computer graphics.
 - documentation
 - materials
   - plastic
+    - kd
+    - ks
+    - ka
   - metal (reflection)
   - checkerboard (see RMC p345)
   - wood (requires noise) 
@@ -80,10 +83,11 @@ Made structs for Vec3f, Sphere and Z+Plane.
 
 Implemented simple SDF ray march / "sphere cast" rendering.
 
-I make a list of objects that implement the SDF (Signed Distance Field) trait,
-along with a color (this should be a shader, eventually). I walk the scene,
-using the distance to the closest object. If I get within a tolerance, I bail
-out of the walk. If I never bail out, I return None.
+I make a list of objects that implement the SDF (Signed Distance
+Field) trait, along with a color (this should be a shader,
+eventually). I walk the scene, using the distance to the closest
+object. If I get within a tolerance, I bail out of the walk. If I
+never bail out, I return None.
 
 The ground plane has a simple checkerboard shader.
 
@@ -91,14 +95,23 @@ If nothing gets hit, I shoot the ray at the sky sphere to get the sky color.
 
 ![spheres_2022_09_23](https://user-images.githubusercontent.com/72338/192061994-d26847e0-4dfa-4fe7-9975-a72ce24445ae.png)
 
-There's a green rim noticeable on the blue spheres. This is likely due to an 
-error in running out of iterations before getting within the sphere tolerance, 
-we keep taking smaller and smaller steps, but we don't register a collision. 
-This can be fixed by increasing the number of steps and/or loosening the tolerance.
+There's a green rim noticeable on the blue spheres. This is likely due
+to an error in running out of iterations before getting within the
+sphere tolerance, we keep taking smaller and smaller steps, but we
+don't register a collision.  This can be fixed by increasing the
+number of steps and/or loosening the tolerance.
 
-There's also green on the horizon, which is a side effect of the sloppy WIP sky sphere, 
-combined with only rendering out a distance of 1000.0 units. Updating the sky sphere
-and/or increasing the render distance would provide more plane out near the horizon.
-Pushing the far boundary would have decreasing returns, while making the sky sphere
-more able to hide this sort of artifact would probably be more effective.
+There's also green on the horizon, which is a side effect of the
+sloppy WIP sky sphere, combined with only rendering out a distance of
+1000.0 units. Updating the sky sphere and/or increasing the render
+distance would provide more plane out near the horizon.  Pushing the
+far boundary would have decreasing returns, while making the sky
+sphere more able to hide this sort of artifact would probably be more
+effective.
 
+
+### September 24, 2022
+
+No visual changes, but got multithreading working. I've heard folks
+say that once it compiles, you can trust it, but I'm still struggling
+to get stuff to compile the first time I write it.

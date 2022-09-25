@@ -1,9 +1,13 @@
 use image::ColorType;
 use image::codecs::png::PngEncoder;
 use image::ImageEncoder;
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::{Error, ErrorKind};
-use std::time::{Duration, Instant};
+use std::time::Instant;
+use crossbeam_channel::bounded;
+
+extern crate num_cpus;
 
 mod bdg_color;
 mod camera;
@@ -15,11 +19,19 @@ mod sky;
 use math::{Vec3f, Ray};
 use geom::plane::ZPlusPlane;
 use geom::sphere::Sphere;
-use bdg_color::ColorRGB_f;
+use bdg_color::{ColorRgbF, ColorRgb8};
 use sdf::SDF;
 
 fn main() {
     let start_time = Instant::now();
+
+    let found_cpus = num_cpus::get();
+
+    println!("found {} CPUs", found_cpus);
+
+    let num_threads = ((found_cpus as f32) * 1.5) as usize;
+
+    println!("using {} threads", num_threads);
     
     let v = math::Vec3f {
 	x: 0.0,
@@ -73,9 +85,9 @@ fn main() {
 
     };
 
-    let mut objects = Vec::<(Box<dyn SDF>, ColorRGB_f)>::new();
+    let mut objects = Vec::<(Box<dyn SDF + Sync>, ColorRgbF)>::new();
 
-    objects.push((Box::new(p), ColorRGB_f::RED));
+    objects.push((Box::new(p), ColorRgbF::RED));
 
     for angle in (0..360).step_by(30) {
 	let angle_radians = math::degrees_to_radians(angle as f32);
@@ -84,19 +96,8 @@ fn main() {
 	    y: 6.0 * f32::cos(angle_radians),
 	    z: 2.0
 	};
-	let red_val = if angle > 250 {
-	    250.0
-	} else {
-	    angle as f32
-	};
-	let green_val = 250.0 - red_val;
-	/*
-	let color = ColorRGB_f{
-	    r: red_val,
-	    g: green_val,
-	    b: 50.0
-    };*/
-	let color = ColorRGB_f::from_hsv(angle as f32, 1.0, 1.0);
+	
+	let color = ColorRgbF::from_hsv(angle as f32, 1.0, 1.0);
 	let colored_sphere = Sphere {
 	    center: sphere_posn,
 	    r: 1.0
@@ -111,43 +112,76 @@ fn main() {
 
     let rays = cam.get_rays(bounds.0, bounds.1);
 
-    for ((x,y),r) in rays {
-	//let (hit_idx, hit_pos) = shoot_ray_at_scene(&r, &p, &s, &cam, 1000, 10000.0);
+    let rays_per_chunk = rays.len() / num_threads + 1;
 
-	let mut c = ColorRGB_f::MAGENTA;
+    println!("chunk size: {}", rays_per_chunk);
 
-	let hit = shoot_ray_at_objects(&r, &objects,
-				       &cam, 1000, 10000.0);
+    {
+	let ray_chunks: Vec<&[((usize, usize), Ray)]> =
+	    rays.chunks(rays_per_chunk).collect();
 
-	match hit {
-	    Some((idx, pos)) => {
-		c = match idx {
-		    0 => shade_checker(pos),
-		    _ => objects[idx].1,
-		};
-	    },
-	    None => {
-		c = sky_box.shoot_ray(r);
+	let rendered_chunk = crossbeam::scope(|spawner| {
+	    //println!("inside crossbeam");
+
+	    // bounded multiple producer channel
+	    let (tx, rx) = bounded(0);
+	    
+	    for (_i, rc) in ray_chunks.into_iter().enumerate() {
+		//println!("preparing thread {}", i);
+
+		// we want an immutable list of objects
+		let obj_copy = &objects;
+
+		let tx_clone = tx.clone();
+
+		spawner.spawn(move |_| {
+		    let mut out_data = HashMap::<(usize, usize), ColorRgb8>::new();
+		    
+		    //render
+		    for ((x,y),r) in rc {
+			//println!("rendering {},{}", x, y);
+
+			let hit = shoot_ray_at_objects(r, &obj_copy,
+						       &cam, 1000, 10000.0);
+
+			// This is a hack to get the ground to be
+			// checkered.  I have not yet written an
+			// object that has geometry and a shader.
+			let c = match hit {
+			    Some((idx, pos)) => {
+				match idx {
+				    0 => shade_checker(pos),
+				    _ => obj_copy[idx].1,
+				}
+			    },
+			    None => {
+				sky_box.shoot_ray(*r)
+			    }
+			};
+			
+			let c_b = c.to_rgb8();
+
+			out_data.insert((*x,*y), c_b);
+		    }
+
+		    tx_clone.send(out_data).unwrap();
+		});
 	    }
-	};
 
-	/*
-	let c = match hit_idx {
-	    0 => sky_box.shoot_ray(r),
-	    1 => shade_checker(hit_pos),
-	    2 => ColorRGB_f::GRAY_50,
-	    _ => ColorRGB_f::MAGENTA
-	};*/
-
-	//println!("r: {:?} c: {:?}", r, c);
-
-	let c_b = c.to_rgb8();
+	    for _ri in 0..num_threads {
+		let ret_data = rx.recv().unwrap();
+		//println!("unpacking {}", ri);
+		for ((x, y), c) in ret_data {
+		    //println!("Got {} {} {:?}", x,y,c);
+		    let i = (x + y * bounds.0) * 3;
+		    pixels[i]   = c.r;
+		    pixels[i+1] = c.g;
+		    pixels[i+2] = c.b;
+		}
+	    }
+	}).unwrap();
 	
-	//println!("r: {:?} c: {:?} x {} y {}", r, c_b, x, y);
-	let i = (x + y * bounds.0) * 3;
-	pixels[i] = c_b.r;
-	pixels[i+1] = c_b.g;
-	pixels[i+2] = c_b.b;
+	println!("rendered chunk: {:?}", rendered_chunk);
     }
 
     let render_duration = start_time.elapsed();
@@ -183,44 +217,8 @@ fn write_image(filename: &str, pixels: &[u8], bounds: (usize, usize))
     }
 }
 
-fn shoot_ray_at_scene(r: &Ray, p: &ZPlusPlane, s: &Sphere, cam: &camera::PerspectiveCamera,
-		      num_steps: usize, dist: f32) -> (u8, Vec3f) {
-
-    let tolerance = 1.0e-6;
-
-    let mut cur_pos = cam.posn;
-    let r_step = r.direction.normalized();
-
-    for si in 0 .. num_steps {
-	let plane_dist = p.dist(&cur_pos);
-	let sphere_dist = s.dist(&cur_pos);
-
-	if plane_dist < tolerance {
-	    return (1, cur_pos);
-	}
-
-	if sphere_dist < tolerance {
-	    return (2, cur_pos);
-	}
-
-	let min_dist = if plane_dist < sphere_dist {
-	    plane_dist
-	} else {
-	    sphere_dist
-	};
-
-	cur_pos = cur_pos + r_step.scale(min_dist);
-
-	if (cur_pos - cam.posn).len() > dist {
-	    break;
-	}	
-    }
-    return (0, cur_pos);
-}
-
-
 fn shoot_ray_at_objects(r: &Ray,
-			obj_list: &Vec::<(Box<dyn SDF>, ColorRGB_f)>,
+			obj_list: &Vec<(Box<dyn SDF + Sync>, ColorRgbF)>,
 			cam: &camera::PerspectiveCamera,
 			num_steps: usize,
 			dist: f32) -> Option<(usize, Vec3f)> {
@@ -261,7 +259,7 @@ fn shoot_ray_at_objects(r: &Ray,
 
 
 
-fn shade_checker(v: Vec3f) -> ColorRGB_f {
+fn shade_checker(v: Vec3f) -> ColorRgbF {
     let square_width = 8.0;
     
     let mut vx = v.x % (square_width * 2.0);
@@ -276,12 +274,12 @@ fn shade_checker(v: Vec3f) -> ColorRGB_f {
     }
 
     if vx > square_width && vy > square_width {
-	return ColorRGB_f::WHITE;
+	return ColorRgbF::WHITE;
     }
 
     if vx < square_width && vy < square_width {
-	return ColorRGB_f::WHITE;
+	return ColorRgbF::WHITE;
     }
 
-    return ColorRGB_f::BLACK;
+    return ColorRgbF::BLACK;
 }

@@ -1,19 +1,19 @@
 // sky.rs
 
-
 use crate::math::Ray;
-use crate::bdg_color::ColorRGB_f;
+use crate::bdg_color::ColorRgbF;
 
+#[derive(Debug, Copy, Clone)]
 pub struct SkySphere {
 
 }
 
 impl SkySphere {
-    pub fn shoot_ray(&self, r: Ray) -> ColorRGB_f {
+    pub fn shoot_ray(&self, r: Ray) -> ColorRgbF {
 	if r.direction.z > 0.0 {
-	    ColorRGB_f::CYAN
+	    ColorRgbF::CYAN
 	} else {
-	    ColorRGB_f::GREEN
+	    ColorRgbF::GREEN
 	}
     }
 }

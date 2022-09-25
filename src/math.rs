@@ -9,14 +9,17 @@ pub struct Vec3f {
     pub z: f32,
 }
 
+#[allow(unused)]
 impl Vec3f {
     pub const UP: Vec3f = Vec3f { x: 0.0, y: 0.0, z: 1.0 };
     pub const EAST: Vec3f = Vec3f { x: 1.0, y: 0.0, z: 0.0 };
     pub const NORTH: Vec3f = Vec3f { x: 0.0, y: 1.0, z: 0.0 };
     pub const DOWN: Vec3f = Vec3f { x: 0.0, y: 0.0, z: -1.0 };
     pub const WEST: Vec3f = Vec3f { x: -1.0, y: 0.0, z: 0.0 };
-    pub const SOUTH: Vec3f = Vec3f { x: 0.0, y: -1.0, z: 0.0 };
-    
+    pub const SOUTH: Vec3f = Vec3f { x: 0.0, y: -1.0, z: 0.0 };    
+}
+
+impl Vec3f {
     pub fn dist(self, p:&Vec3f) -> f32 {
 	let dx = p.x - self.x;
 	let dy = p.y - self.y;

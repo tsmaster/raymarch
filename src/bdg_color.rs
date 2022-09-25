@@ -3,36 +3,39 @@
 // provides RGB colors 0.0-255.0
 
 #[derive(Debug, Copy, Clone)]
-pub struct ColorRGB_f {
+pub struct ColorRgbF {
     pub r: f32,
     pub g: f32,
     pub b: f32
 }
 
-impl ColorRGB_f {
-    pub const RED: ColorRGB_f = ColorRGB_f { r: 255.0, g: 0.0, b: 0.0 };
-    pub const GREEN: ColorRGB_f = ColorRGB_f { r: 0.0, g: 255.0, b: 0.0 };
-    pub const BLUE: ColorRGB_f = ColorRGB_f { r: 0.0, g: 0.0, b: 255.0 };
-    pub const YELLOW: ColorRGB_f = ColorRGB_f { r: 255.0, g: 255.0, b: 0.0 };
-    pub const CYAN: ColorRGB_f = ColorRGB_f { r: 0.0, g: 255.0, b: 255.0 };
-    pub const MAGENTA: ColorRGB_f = ColorRGB_f { r: 255.0, g: 0.0, b: 255.0 };
-    pub const BLACK: ColorRGB_f = ColorRGB_f { r: 0.0, g: 0.0, b: 0.0 };
-    pub const GRAY_50: ColorRGB_f = ColorRGB_f { r: 128.0, g: 128.0, b: 128.0 };
-    pub const WHITE: ColorRGB_f = ColorRGB_f { r: 255.0, g: 255.0, b: 255.0 };
+#[allow(unused)]
+impl ColorRgbF {
+    pub const RED: ColorRgbF = ColorRgbF { r: 255.0, g: 0.0, b: 0.0 };
+    pub const GREEN: ColorRgbF = ColorRgbF { r: 0.0, g: 255.0, b: 0.0 };
+    pub const BLUE: ColorRgbF = ColorRgbF { r: 0.0, g: 0.0, b: 255.0 };
+    pub const YELLOW: ColorRgbF = ColorRgbF { r: 255.0, g: 255.0, b: 0.0 };
+    pub const CYAN: ColorRgbF = ColorRgbF { r: 0.0, g: 255.0, b: 255.0 };
+    pub const MAGENTA: ColorRgbF = ColorRgbF { r: 255.0, g: 0.0, b: 255.0 };
+    pub const BLACK: ColorRgbF = ColorRgbF { r: 0.0, g: 0.0, b: 0.0 };
+    pub const GRAY_50: ColorRgbF = ColorRgbF { r: 128.0, g: 128.0, b: 128.0 };
+    pub const WHITE: ColorRgbF = ColorRgbF { r: 255.0, g: 255.0, b: 255.0 };
+}
 
-    pub fn to_rgb8(self) -> ColorRGB_8 {
+impl ColorRgbF {
+    pub fn to_rgb8(self) -> ColorRgb8 {
 	let r_8 = self.r as u8;
 	let g_8 = self.g as u8;
 	let b_8 = self.b as u8;
 
-	ColorRGB_8 {
+	ColorRgb8 {
 	    r:r_8,
 	    g:g_8,
 	    b:b_8
 	}
     }
 
-    pub fn from_hsv(h: f32, s: f32, v: f32) -> ColorRGB_f {
+    pub fn from_hsv(h: f32, s: f32, v: f32) -> ColorRgbF {
 	let chroma = v * s;
 	let hue_val = (h / 60.0) % 2.0 - 1.0;
 	let x = chroma * (1.0 - f32::abs(hue_val));
@@ -54,7 +57,7 @@ impl ColorRGB_f {
 	    rgb_p = (chroma, 0.0, x);
 	}
 
-	ColorRGB_f {
+	ColorRgbF {
 	    r:(rgb_p.0 + m) * 255.0,
 	    g:(rgb_p.1 + m) * 255.0,
 	    b:(rgb_p.2 + m) * 255.0
@@ -63,7 +66,7 @@ impl ColorRGB_f {
 }
 
 #[derive(Debug, Copy, Clone)]
-pub struct ColorRGB_8 {
+pub struct ColorRgb8 {
     pub r: u8,
     pub g: u8,
     pub b: u8

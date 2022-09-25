@@ -4,6 +4,7 @@ use crate::math::Vec3f;
 use crate::sdf::SDF;
 
 // a plane filling space below a given z level
+#[derive(Debug, Copy, Clone)]
 pub struct ZPlusPlane {
     pub z: f32,
 }

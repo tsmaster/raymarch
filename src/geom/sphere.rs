@@ -3,6 +3,7 @@
 use crate::math::Vec3f;
 use crate::sdf::SDF;
 
+#[derive(Debug, Copy, Clone)]
 pub struct Sphere {
     pub center: Vec3f,
     pub r: f32,
