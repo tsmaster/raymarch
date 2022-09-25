@@ -108,6 +108,26 @@ where
     o_min + (o_max-o_min) * t
 }
 
+
+pub fn clamped_map<T>(v: f32,
+	      i_min: f32, i_max: f32,
+	      o_min: T, o_max: T) -> T
+where
+    T: Mul<f32, Output = T> + Add<T, Output = T> + Sub<T, Output = T> + Copy,
+    f32: Mul<T, Output = T> + Mul<f32, Output = f32>
+{
+    if v <= i_min {
+	return o_min;
+    } else if v >= i_max {
+	return o_max;
+    }
+	    
+    let t = (v - i_min) / (i_max - i_min);
+    o_min + (o_max-o_min) * t
+}
+
+
+
 pub fn array_interpolate<T>
     (t: f32, vals: &[(f32, T)]) -> T
 where

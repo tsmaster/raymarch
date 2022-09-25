@@ -119,9 +119,14 @@ fn main() {
 			let c = match hit {
 			    Some((idx, pos)) => {
 				match idx {
-				    0 => shade_checker(pos),
+				    0 => shade_checker(pos, &cam.posn),
 				    //0 => sky_box.shoot_ray(*r),
-				    _ => obj_copy[idx].1,
+				    //_ => obj_copy[idx].1,
+				    _ => {
+					let normal = calc_normal(&obj_copy[idx].0, pos);
+					shade_sphere(pos, normal, &cam.posn,
+						     ((idx - 1) as f32) * 30.0)
+				    }
 				}
 			    },
 			    None => {
@@ -225,8 +230,10 @@ fn shoot_ray_at_objects(r: &Ray,
 
 
 
-fn shade_checker(v: Vec3f) -> ColorRgbF {
+fn shade_checker(v: Vec3f, cam_pos: &Vec3f) -> ColorRgbF {
     let square_width = 8.0;
+
+    let dist = v.dist(cam_pos);
     
     let mut vx = v.x % (square_width * 2.0);
     let mut vy = v.y % (square_width * 2.0);
@@ -239,13 +246,35 @@ fn shade_checker(v: Vec3f) -> ColorRgbF {
 	vy += square_width * 2.0;
     }
 
-    if vx > square_width && vy > square_width {
-	return ColorRgbF::WHITE;
-    }
+    let checker_color = 
+	if (vx > square_width && vy > square_width) ||
+	(vx < square_width && vy < square_width) {
+	    ColorRgbF::WHITE
+	} else {
+	    ColorRgbF::BLACK
+	};
 
-    if vx < square_width && vy < square_width {
-	return ColorRgbF::WHITE;
-    }
+    math::clamped_map(dist, 0.0, 300.0,
+	      checker_color, ColorRgbF::GRAY_50)
+}
 
-    return ColorRgbF::BLACK;
+fn shade_sphere(v: Vec3f, n: Vec3f, _cam_pos: &Vec3f, color_angle_deg: f32) -> ColorRgbF {
+    let lightness = math::clamped_map(n.z,
+				      0.0, 1.0,
+				      0.5, 1.0);
+    ColorRgbF::from_hsv(color_angle_deg, 1.0, lightness)
+}
+
+fn calc_normal(obj:&Box<dyn SDF + Sync>, pos: Vec3f) -> Vec3f {
+    let epsilon = 0.001;
+    let center_dist = obj.dist(&pos);
+    let x_dist = obj.dist(&(pos + Vec3f{x: epsilon, y:0.0, z:0.0}));
+    let y_dist = obj.dist(&(pos + Vec3f{x:0.0, y:epsilon, z:0.0}));
+    let z_dist = obj.dist(&(pos + Vec3f{x:0.0, y:0.0, z:epsilon}));
+
+    Vec3f{
+	x:x_dist - center_dist,
+	y:y_dist - center_dist,
+	z:z_dist - center_dist
+    }.normalized()
 }
