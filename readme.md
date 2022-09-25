@@ -7,42 +7,60 @@ and have fun making computer graphics.
 
 - Define scenes in JSON
 - More geom primitives
-  - cube
+  - cube / box
   - triangle mesh
   - cylinder
+  - capsule
   - torus
   - teapot?
 - boolean composition
   - union
   - difference
   - intersection
+  - smooth addition
+  - rounded corners
 - transformations
   - scale
   - rotation
   - translation
-- normals from SDF for shading
-- preludes for submodules (e.g. geom)
+- preludes for submodules
+  - geom
+  - lights
+  - colors
 - documentation
 - materials
   - plastic
     - kd
     - ks
     - ka
+    - specular power
   - metal (reflection)
+    - roughness
   - checkerboard (see RMC p345)
   - wood (requires noise) 
     - see RMC p350
     - see also https://docs.rs/noise/latest/noise/struct.Cylinders.html
   - glass (refraction)
+  - BRDF (there are a few databases of materials out there, would be cool to support them)
 - lights
-- shadows
+  - point
+  - cone
+  - lights probably have position/direction
+  - lights probably have a color
+  - lights may have some sort of intensity/falloff  
 - simplex(?) noise https://docs.rs/noise/latest/noise/
 - fog
 - GLTF loading
   - e.g. Kenney.nl's car kit: https://www.kenney.nl/assets/car-kit
   - probably using https://crates.io/crates/gltf
-- add colors from XKCD color survey https://blog.xkcd.com/2010/05/03/color-survey-results/
+- add colors from Crayola crayon boxes
+  - wikipedia https://en.wikipedia.org/wiki/List_of_Crayola_crayon_colors
 - material texture support (e.g. for posters, decals)
+- "renderable object" that collects geometry, shader
+- "scene" container for lights, renderable objects
+  - loadable from JSON, above
+- cmdline arg for JSON filename
+- cmdline arg for resolution
 
 ## Done
 
@@ -55,6 +73,16 @@ and have fun making computer graphics.
   - sphere
   - skydome
 - multi-threading
+- normals from SDF for shading
+- add colors from XKCD color survey https://blog.xkcd.com/2010/05/03/color-survey-results/
+- add crayola colors
+  - jenny's crayon collection http://www.jennyscrayoncollection.com/2017/10/complete-list-of-current-crayola-crayon.html
+- lights
+  - directional
+  - ambient
+- shadows
+  - using ray marching proximity technique
+  
 
 ## References
 
@@ -159,3 +187,28 @@ number of CPUs gives optimal performance.
 ![spheres_2022_09_24_a](https://user-images.githubusercontent.com/72338/192127540-92fe52ca-f3ae-4065-b2a3-2b0bef150101.png)
 
 
+### September 25, 2022
+
+Created a LightSource trait with (placeholder) implementations of cone
+and point lights, a workable ambient light, and a first draft of a
+directional light source.
+
+Right now, the sphere shader has the diffuse lighting model built in,
+and the ground has no lighting model, which makes things look a little
+broken.
+
+I also pulled in the XKCD color survey color names, so now
+XKCD_BRIGHT_RED is a color, as is XKCD_BLUE_GREEN_1 and XKCD_POO.
+
+And the big thing from this afternoon was checking for occlusion of
+directional lights. The presumption is that the light is infinitely
+far away (the sun is approximately infinitely far away), so I cast a
+ray from the surface of the collided object in the direction of the
+light (so, in the opposite direction of the incident light ray), and
+if I collide with anything, I don't include that light's illumination.
+
+I'm not satisfied with this, as it includes bumping the starting point
+away from the object to keep it from immediately colliding with
+itself. But sometimes, self-collisions are what you want. Maybe I just
+make the SDF tolerance more easy to use as a constant, and bump the
+start point further away than that.

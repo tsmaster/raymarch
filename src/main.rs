@@ -12,16 +12,34 @@ extern crate num_cpus;
 
 mod bdg_color;
 mod camera;
+mod cast;
+mod crayola_color;
 mod geom;
+mod lights;
 mod math;
 mod sdf;
+mod shaders;
 mod sky;
+mod xkcd_color;
 
+use crate::cast::shoot_ray_at_objects;
 use math::{Vec3f, Ray};
 use geom::plane::ZPlusPlane;
 use geom::sphere::Sphere;
 use bdg_color::{ColorRgbF, ColorRgb8};
+use lights::ambient::AmbientLight;
+use lights::cone::ConeLight;
+use lights::directional::DirectionalLight;
+use lights::point::PointLight;
+use lights::lightsource::LightSource;
 use sdf::SDF;
+
+use shaders::diffuse::DiffuseShader;
+use shaders::specular::SpecularShader;
+use shaders::reflective::ReflectiveShader;
+use shaders::checker::CheckerShader;
+use shaders::distance_fade::DistanceFadeShader;
+use shaders::shader::Shader;
 
 #[derive(Parser)]
 struct Args {
@@ -60,7 +78,7 @@ fn main() {
 	y: -8.0,
 	z: 6.0
     };
-
+    
     let look_posn = Vec3f{
 	x: 0.0,
 	y: 0.0,
@@ -78,10 +96,53 @@ fn main() {
 
     };
 
-    let mut objects = Vec::<(Box<dyn SDF + Sync>, ColorRgbF)>::new();
+    let mut objects = Vec::<(Box<dyn SDF + Sync>, Box<dyn Shader + Sync>)>::new();
+    
+    objects.push((Box::new(p), Box::new(DistanceFadeShader {
+	near_dist: 50.0,
+	far_dist: 250.0,
+	near_shader: Box::new(CheckerShader{
+	    x_width: 6.0,
+	    y_width: 6.0,
+	    odd_shader: Box::new(DiffuseShader {
+		color: ColorRgbF::CRAYOLA_ALMOND}),
+	    even_shader: Box::new(DiffuseShader {
+		color: ColorRgbF::CRAYOLA_MIDNIGHT_BLUE}),
+	}),
+	far_shader: Box::new(DiffuseShader {
+	    color: ColorRgbF::CRAYOLA_WILD_BLUE_YONDER}),
+    })));
 
-    objects.push((Box::new(p), ColorRgbF::RED));
+    let mut lights = Vec::<Box<dyn LightSource + Sync>>::new();
 
+    lights.push(Box::new(AmbientLight {
+	color: ColorRgbF::WHITE,
+	intensity: 0.15
+    }));
+
+    lights.push(Box::new(DirectionalLight {
+	direction: Vec3f {
+	    x: -1.0,
+	    y: 1.0,
+	    z: -4.0
+	},
+	color: ColorRgbF::WHITE,
+	intensity: 0.55
+    }));
+
+    lights.push(Box::new(DirectionalLight {
+	direction: Vec3f {
+	    x: 1.0,
+	    y: 1.0,
+	    z: -0.2
+	},
+	color: ColorRgbF::CYAN,
+	intensity: 0.3
+    }));
+
+    
+    // ring of spheres
+    /*
     for angle in (0..360).step_by(30) {
 	let angle_radians = math::degrees_to_radians(angle as f32);
 	let sphere_posn = Vec3f{
@@ -96,7 +157,116 @@ fn main() {
 	    r: 1.0
 	};
 	objects.push((Box::new(colored_sphere), color));
-    }    
+} */
+
+    // single sphere scene
+    /*
+    {
+	let sphere_posn = Vec3f {
+	    x: 0.0,
+	    y: 0.0,
+	    z: 3.0
+	};
+	let white_sphere = Sphere {
+	    center: sphere_posn,
+	    r:2.0
+	};
+	objects.push((Box::new(white_sphere), ColorRgbF::CRAYOLA_CARNATION_PINK));
+    }*/
+
+    // crayola crayon box
+    {
+	let spc = 5.0;
+
+	let white_sphere_posn = Vec3f {
+	    x: spc,
+	    y: -spc,
+	    z: 3.0
+	};
+	let white_sphere = Sphere {
+	    center: white_sphere_posn,
+	    r:2.0
+	};
+	objects.push((Box::new(white_sphere),
+		      Box::new(DiffuseShader {
+			  color: ColorRgbF::CRAYOLA_WHITE})));
+
+	let red_sphere_posn = Vec3f {
+	    x: -spc,
+	    y: 0.0,
+	    z: 3.0
+	};
+	let red_sphere = Sphere {
+	    center: red_sphere_posn,
+	    r:2.0
+	};
+	objects.push((Box::new(red_sphere),
+		      Box::new(DiffuseShader {
+			  color: ColorRgbF::CRAYOLA_RED})));
+	
+	objects.push((Box::new(Sphere {
+	    center: Vec3f {
+		x: spc,
+		y: 0.0,
+		z: 3.0},
+	    r: 2.0}),
+		      Box::new(DiffuseShader {
+			  color: ColorRgbF::CRAYOLA_GREEN})));
+
+	objects.push((Box::new(Sphere {
+	    center: Vec3f {
+		x: 0.0,
+		y: -spc,
+		z: 3.0},
+	    r: 2.0}),
+		      Box::new(DiffuseShader {
+			  color: ColorRgbF::CRAYOLA_YELLOW})));
+	
+	objects.push((Box::new(Sphere {
+	    center: Vec3f {
+		x: 0.0,
+		y: spc,
+		z: 3.0},
+	    r: 2.0}),
+		      Box::new(DiffuseShader {
+			  color: ColorRgbF::CRAYOLA_VIOLET_PURPLE})));
+
+	objects.push((Box::new(Sphere {
+	    center: Vec3f {
+		x: spc,
+		y: spc,
+		z: 3.0},
+	    r: 2.0}),
+		      Box::new(DiffuseShader {
+			  color: ColorRgbF::CRAYOLA_BLUE})));
+	
+	objects.push((Box::new(Sphere {
+	    center: Vec3f {
+		x: -spc,
+		y: -spc,
+		z: 3.0},
+	    r: 2.0}),
+		      Box::new(DiffuseShader {
+			  color: ColorRgbF::CRAYOLA_ORANGE})));
+
+	objects.push((Box::new(Sphere {
+	    center: Vec3f {
+		x: 0.0,
+		y: 0.0,
+		z: 3.0},
+	    r: 2.0}),
+		      Box::new(DiffuseShader {
+			  color: ColorRgbF::CRAYOLA_GRAY})));
+	
+	objects.push((Box::new(Sphere {
+	    center: Vec3f {
+		x: -spc,
+		y: spc,
+		z: 3.0},
+	    r: 2.0}),
+		      Box::new(DiffuseShader {
+			  color: ColorRgbF::CRAYOLA_BLACK})));
+    }
 
     let bounds = (1600, 900);
     //let bounds = (160, 90);
@@ -117,7 +287,9 @@ fn main() {
 	    
 	    for (_i, rc) in ray_chunks.into_iter().enumerate() {
 		// we want an immutable list of objects
-		let obj_copy = &objects;
+		let immut_objects = &objects;
+
+		let immut_lights = &lights;
 
 		let tx_clone = tx.clone();
 
@@ -127,8 +299,8 @@ fn main() {
 		    //render
 		    for ((x,y),r) in rc {
 			let hit = shoot_ray_at_objects(r,
-						       &obj_copy,
-						       &cam,
+						       &immut_objects,
+						       &cam.posn,
 						       1000, 10000.0);
 
 			// This is a hack to get the ground to be
@@ -136,15 +308,25 @@ fn main() {
 			// object that has geometry and a shader.
 			let c = match hit {
 			    Some((idx, pos)) => {
-				match idx {
-				    0 => shade_checker(pos, &cam.posn),
-				    //0 => sky_box.shoot_ray(*r),
-				    //_ => obj_copy[idx].1,
-				    _ => {
-					let normal = calc_normal(&obj_copy[idx].0, pos);
-					shade_sphere(pos, normal, &cam.posn,
-						     ((idx - 1) as f32) * 30.0)
-				    }
+				let normal = calc_normal(&immut_objects[idx].0, pos);
+				let base_color = immut_objects[idx].1.get_base_color(&pos,
+										     &normal,
+										     &cam.posn);
+
+				let illum_color = get_illumination(pos,
+								   normal,
+								   &immut_lights,
+								   immut_objects
+				);
+
+				let r = (illum_color.r / 255.0) * base_color.r;
+				let g = (illum_color.g / 255.0) * base_color.g;
+				let b = (illum_color.b / 255.0) * base_color.b;
+				    
+				ColorRgbF {
+				    r: r,
+				    g: g,
+				    b: b
 				}
 			    },
 			    None => {
@@ -211,82 +393,54 @@ fn write_image(filename: &str, pixels: &[u8], bounds: (usize, usize))
     }
 }
 
-fn shoot_ray_at_objects(r: &Ray,
-			obj_list: &Vec<(Box<dyn SDF + Sync>, ColorRgbF)>,
-			cam: &camera::PerspectiveCamera,
-			num_steps: usize,
-			dist: f32) -> Option<(usize, Vec3f)> {
+/*
 
-    let tolerance = 1.0e-4;
+fn shade_sphere(v: Vec3f,
+		n: Vec3f,
+		_cam_pos: &Vec3f,
+		material_color: &ColorRgbF,
+		lights: &Vec::<Box<dyn LightSource + Sync>>) -> ColorRgbF {
 
-    let mut cur_pos = cam.posn;
-    let r_step = r.direction.normalized();
+    let mut illum_color = ColorRgbF::BLACK;
 
-    for _si in 0 .. num_steps {
-	let mut best_dist = dist * 100.0;
-	let mut best_obj_idx = 0;
-
-	for obj_idx in 0 .. obj_list.len() {
-	    let (obj, _) = &obj_list[obj_idx];
-	    
-	    let obj_dist = obj.dist(&cur_pos);
-	    if obj_dist < best_dist {
-		best_obj_idx = obj_idx;
-		best_dist = obj_dist;
-	    }
+    for light in lights {
+	match light.get_illumination(&v, &n) {
+	    None => {}
+            Some((intensity, color)) => illum_color = illum_color + (color * intensity)
 	}
+    }
 
-	if best_dist < tolerance {
-	    return Some((best_obj_idx, cur_pos));
+    let r = (illum_color.r / 255.0) * material_color.r;
+    let g = (illum_color.g / 255.0) * material_color.g;
+    let b = (illum_color.b / 255.0) * material_color.b;
+
+    ColorRgbF {
+	r: r,
+	g: g,
+	b: b
+    }
+}*/
+
+
+fn get_illumination(v: Vec3f,
+		    n: Vec3f,
+		    lights: &Vec::<Box<dyn LightSource + Sync>>,
+		    objects: &Vec::<(Box<dyn SDF + Sync>,
+				     Box<dyn Shader + Sync>)>) -> ColorRgbF {
+
+    let mut illum_color = ColorRgbF::BLACK;
+
+    for light in lights {
+	match light.get_illumination(&v, &n, objects) {
+	    None => {}
+            Some((intensity, color)) => illum_color = illum_color + (color * intensity)
 	}
-
-	cur_pos = cur_pos + r_step.scale(best_dist);
-
-	if (cur_pos - cam.posn).len() > dist {
-	    break;
-	}	
     }
-    
-    return None;
+
+    illum_color
 }
 
 
-
-
-fn shade_checker(v: Vec3f, cam_pos: &Vec3f) -> ColorRgbF {
-    let square_width = 8.0;
-
-    let dist = v.dist(cam_pos);
-    
-    let mut vx = v.x % (square_width * 2.0);
-    let mut vy = v.y % (square_width * 2.0);
-
-    if vx < 0.0 {
-	vx += square_width * 2.0;
-    }
-
-    if vy < 0.0 {
-	vy += square_width * 2.0;
-    }
-
-    let checker_color = 
-	if (vx > square_width && vy > square_width) ||
-	(vx < square_width && vy < square_width) {
-	    ColorRgbF::WHITE
-	} else {
-	    ColorRgbF::BLACK
-	};
-
-    math::clamped_map(dist, 0.0, 300.0,
-	      checker_color, ColorRgbF::GRAY_50)
-}
-
-fn shade_sphere(v: Vec3f, n: Vec3f, _cam_pos: &Vec3f, color_angle_deg: f32) -> ColorRgbF {
-    let lightness = math::clamped_map(n.z,
-				      0.0, 1.0,
-				      0.5, 1.0);
-    ColorRgbF::from_hsv(color_angle_deg, 1.0, lightness)
-}
 
 fn calc_normal(obj:&Box<dyn SDF + Sync>, pos: Vec3f) -> Vec3f {
     let epsilon = 0.001;

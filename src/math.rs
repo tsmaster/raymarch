@@ -86,6 +86,18 @@ impl Sub for Vec3f {
     }
 }
 
+impl Mul<f32> for Vec3f {
+    type Output = Self;
+
+    fn mul(self, s:f32) -> Self {
+	Self {
+	    x: self.x * s,
+	    y: self.y * s,
+	    z: self.z * s
+	}
+    }
+}
+
 
 #[derive(Debug, Copy, Clone)]
 pub struct Ray {
