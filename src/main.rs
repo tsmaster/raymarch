@@ -5,6 +5,7 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{Error, ErrorKind};
 use std::time::Instant;
+use clap::Parser;
 use crossbeam_channel::bounded;
 
 extern crate num_cpus;
@@ -22,14 +23,31 @@ use geom::sphere::Sphere;
 use bdg_color::{ColorRgbF, ColorRgb8};
 use sdf::SDF;
 
+#[derive(Parser)]
+struct Args {
+    #[clap(long)]
+    num_threads: Option<i32>,
+
+    #[clap(short = 'o', long = "output")]
+    output_name: Option<String>,
+}
+	
+
 fn main() {
+    let args = Args::parse();
+    
     let start_time = Instant::now();
 
-    let found_cpus = num_cpus::get();
+    let num_threads = match args.num_threads {
+	Some(n) => n as usize,
+	None => {
+	    let found_cpus = num_cpus::get();
 
-    println!("found {} CPUs", found_cpus);
+	    println!("found {} CPUs", found_cpus);
 
-    let num_threads = ((found_cpus as f32) * 1.5) as usize;
+	    ((found_cpus as f32) * 1.5) as usize
+	}
+    };
 
     println!("using {} threads", num_threads);
     
@@ -159,7 +177,12 @@ fn main() {
 
     let save_start_time = Instant::now();
 
-    write_image("OutImages/test_image.png",
+    let out_file_name = match args.output_name {
+	Some(n) => n,
+	None => "OutImages/test_image.png".to_string()
+    };
+    
+    write_image(&out_file_name,
 		&pixels,
 		bounds).expect("error writing image file");
 

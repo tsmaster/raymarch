@@ -32,8 +32,8 @@ impl PerspectiveCamera {
 	let right = (forward.cross(&self.up)).normalized();
 	let up_s = right.cross(&forward);
 
-	println!("forward: {:?}", forward);
-	println!("right:   {:?}", right);
+	//println!("forward: {:?}", forward);
+	//println!("right:   {:?}", right);
 
 	let half_fov_degrees = self.fov / 2.0;
 	let half_fov_radians = half_fov_degrees * std::f32::consts::PI / 180.0;
