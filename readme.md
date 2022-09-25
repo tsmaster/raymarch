@@ -212,3 +212,5 @@ away from the object to keep it from immediately colliding with
 itself. But sometimes, self-collisions are what you want. Maybe I just
 make the SDF tolerance more easy to use as a constant, and bump the
 start point further away than that.
+
+![spheres_2022_09_25](https://user-images.githubusercontent.com/72338/192170112-368aa30c-a5a4-4c81-9ab9-14ca05209be0.png)
