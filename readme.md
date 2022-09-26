@@ -61,6 +61,8 @@ and have fun making computer graphics.
   - loadable from JSON, above
 - cmdline arg for JSON filename
 - cmdline arg for resolution
+- jenga blocks
+  - 1.5cm x 2.5cm x 7.5cm
 
 ## Done
 
