@@ -24,8 +24,16 @@ mod xkcd_color;
 
 use crate::cast::shoot_ray_at_objects;
 use math::{Vec3f, Ray};
+use geom::capsule::Capsule;
+use geom::cubebox::CubeBox;
+use geom::cylinder::CylinderCapped;
+use geom::cylinder::CylinderInfiniteX;
+use geom::cylinder::CylinderInfiniteY;
+use geom::cylinder::CylinderInfiniteZ;
 use geom::plane::ZPlusPlane;
 use geom::sphere::Sphere;
+use geom::torus::Torus;
+use geom::translate::OpTranslate;
 use bdg_color::{ColorRgbF, ColorRgb8};
 use lights::ambient::AmbientLight;
 use lights::cone::ConeLight;
@@ -197,6 +205,7 @@ fn main() {
     }*/
 
     // crayola crayon box
+    /*
     {
 	let spc = 5.0;
 
@@ -289,6 +298,98 @@ fn main() {
 		      Box::new(DiffuseShader {
 			  color: ColorRgbF::CRAYOLA_BLACK})));
     }
+     */
+
+    // Box test
+    /*
+    objects.push((Box::new(CubeBox {
+	half_size: Vec3f {
+	    x: 5.0,
+	    y: 2.5,
+	    z: 1.5
+	}}),
+		  Box::new(DiffuseShader {
+		      color: ColorRgbF::CRAYOLA_ORANGE})));
+
+     */
+
+    // Torus test
+    /*
+    objects.push((Box::new(Torus {
+	r1: 2.0,
+	r2: 1.0,
+    }),
+		  (Box::new(DiffuseShader {
+		      color: ColorRgbF::CRAYOLA_GREEN}))));
+     */
+
+    // Translated Torus test
+    /*
+    objects.push((Box::new(OpTranslate {
+	v: Vec3f {
+	    x: 0.0,
+	    y: 0.0,
+	    z: 3.0
+	},
+	primitive: Box::new(Torus {
+	    r1: 2.0,
+	    r2: 1.0,
+	})
+    }),
+		  Box::new(DiffuseShader {
+		      color: ColorRgbF::CRAYOLA_GREEN})));
+     */
+    // infinite cylinder test
+    objects.push((Box::new(CylinderInfiniteX {
+	y: 1.0,
+	z: 1.0,
+	r: 1.0
+    }),
+		  Box::new(DiffuseShader {
+		      color:ColorRgbF::CRAYOLA_RED})));
+
+    objects.push((Box::new(CylinderInfiniteY {
+	x: 1.0,
+	z: 3.0,
+	r: 1.0
+    }),
+		  Box::new(DiffuseShader {
+		      color:ColorRgbF::CRAYOLA_BLUE})));
+    
+    objects.push((Box::new(CylinderInfiniteZ {
+	x: -1.0,
+	y: -1.0,
+	r: 1.0
+    }),
+		  Box::new(DiffuseShader {
+		      color:ColorRgbF::CRAYOLA_YELLOW})));
+
+    objects.push((Box::new(CylinderCapped {
+	h: 4.0,
+	r: 1.5
+    }),
+		  Box::new(DiffuseShader {
+		      color:ColorRgbF::CRAYOLA_GREEN})));
+
+    objects.push((Box::new(Capsule {
+	a: Vec3f {
+	    x: 3.0,
+	    y: -3.0,
+	    z: 1.0,
+	},
+	b: Vec3f {
+	    x: 3.0,
+	    y: -3.0,
+	    z: 3.0,
+	},
+	r: 1.0
+    }),
+		  Box::new(DiffuseShader {
+		      color:ColorRgbF::CRAYOLA_VIOLET_PURPLE})));
+
+    
+    
+    
 
     let bounds = (1600, 900);
     //let bounds = (160, 90);

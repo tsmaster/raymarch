@@ -28,6 +28,22 @@ impl Vec3f {
 	f32::sqrt(dx*dx + dy*dy + dz*dz)
     }
 
+    pub fn abs(self) -> Vec3f {
+	Vec3f {
+	    x: f32::abs(self.x),
+	    y: f32::abs(self.y),
+	    z: f32::abs(self.z)
+	}
+    }
+
+    pub fn max(self, o:f32) -> Vec3f {
+	Vec3f {
+	    x: f32::max(self.x, o),
+	    y: f32::max(self.y, o),
+	    z: f32::max(self.z, o)
+	}
+    }
+
     pub fn cross(self, o:&Vec3f) -> Vec3f {
 	let x = self.y * o.z - self.z * o.y;
 	let y = self.z * o.x - self.x * o.z;
@@ -98,6 +114,44 @@ impl Mul<f32> for Vec3f {
     }
 }
 
+#[derive(Debug, Copy, Clone)]
+pub struct Vec2f {
+    pub x: f32,
+    pub y: f32,
+}
+
+impl Vec2f {
+    pub fn len(self) -> f32 {
+	f32::sqrt(self.x * self.x + self.y * self.y)
+    }
+
+    pub fn abs(self) -> Vec2f {
+	Vec2f {
+	    x: f32::abs(self.x),
+	    y: f32::abs(self.y)
+	}
+    }
+
+    pub fn max(self, v:f32) -> Vec2f {
+	Vec2f {
+	    x: f32::max(self.x, v),
+	    y: f32::max(self.y, v)
+	}	
+    }
+}
+
+impl Sub for Vec2f {
+    type Output = Self;
+
+    fn sub(self, other: Self) -> Self::Output {
+	Self {
+	    x: self.x - other.x,
+	    y: self.y - other.y
+	}
+    }
+}
+
+
 
 #[derive(Debug, Copy, Clone)]
 pub struct Ray {
@@ -158,4 +212,15 @@ where
     }
 
     panic!("trying to interpolate value {}, but range is {} to {}", t, vals[0].0, vals[vals.len()-1].0);
+}
+
+
+pub fn clamp(v: f32, min: f32, max: f32) -> f32 {
+    if v <= min {
+	return min;
+    } else if v >= max {
+	return max;
+    }
+
+    v
 }

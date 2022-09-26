@@ -1,4 +1,10 @@
 // geom/mod.rs
 
+pub mod capsule;
+pub mod cubebox;
+pub mod cylinder;
 pub mod plane;
 pub mod sphere;
+pub mod torus;
+
+pub mod translate;

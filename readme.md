@@ -7,11 +7,8 @@ and have fun making computer graphics.
 
 - Define scenes in JSON
 - More geom primitives
-  - cube / box
   - triangle mesh
-  - cylinder
-  - capsule
-  - torus
+  - capped cone
   - teapot?
 - boolean composition
   - union
@@ -20,9 +17,8 @@ and have fun making computer graphics.
   - smooth addition
   - rounded corners
 - transformations
-  - scale
+  - scale(?)
   - rotation
-  - translation
 - preludes for submodules
   - geom
   - lights
@@ -34,20 +30,25 @@ and have fun making computer graphics.
     - ks
     - ka
     - specular power
+    - see https://en.wikipedia.org/wiki/Phong_reflection_model
   - metal (reflection)
     - roughness
-  - checkerboard (see RMC p345)
   - wood (requires noise) 
     - see RMC p350
     - see also https://docs.rs/noise/latest/noise/struct.Cylinders.html
   - glass (refraction)
   - BRDF (there are a few databases of materials out there, would be cool to support them)
+    - https://en.wikipedia.org/wiki/Bidirectional_reflectance_distribution_function
+  - BSDF - surface descriptions including BRDF (reflection) and BTDF (transmission)
+    - https://math.hws.edu/graphicsbook/c8/s2.html
 - lights
   - point
   - cone
   - lights probably have position/direction
   - lights probably have a color
-  - lights may have some sort of intensity/falloff  
+  - lights may have some sort of intensity/falloff
+  - intensity for diffuse (should this be on lights?)
+  - intensity for specular (should this be on lights?)
 - simplex(?) noise https://docs.rs/noise/latest/noise/
 - fog
 - GLTF loading
@@ -63,6 +64,8 @@ and have fun making computer graphics.
 - cmdline arg for resolution
 - jenga blocks
   - 1.5cm x 2.5cm x 7.5cm
+  - wood (above)
+- soft shadows
 
 ## Done
 
@@ -74,6 +77,12 @@ and have fun making computer graphics.
   - z-plane
   - sphere
   - skydome
+  - cube / box
+  - torus
+  - cylinder
+    - infinite
+    - capped
+  - capsule    
 - multi-threading
 - normals from SDF for shading
 - add colors from XKCD color survey https://blog.xkcd.com/2010/05/03/color-survey-results/
@@ -84,7 +93,11 @@ and have fun making computer graphics.
   - ambient
 - shadows
   - using ray marching proximity technique
-  
+- materials  
+  - checkerboard (see RMC p345)
+- sdf transformations
+  - translation
+
 
 ## References
 

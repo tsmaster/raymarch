@@ -116,6 +116,8 @@ impl ColorRgbF {
     pub const CRAYOLA_TURQUOISE_BLUE:ColorRgbF = ColorRgbF { r: 119.0, g: 221.0, b: 231.0 };
     pub const CRAYOLA_UNMELLOW_YELLOW:ColorRgbF = ColorRgbF { r: 253.0, g: 252.0, b: 116.0 };
     pub const CRAYOLA_VIOLET_PURPLE:ColorRgbF = ColorRgbF { r: 146.0, g: 110.0, b: 174.0 };
+    pub const CRAYOLA_VIOLET:ColorRgbF = ColorRgbF { r: 146.0, g: 110.0, b: 174.0 };
+    pub const CRAYOLA_PURPLE:ColorRgbF = ColorRgbF { r: 146.0, g: 110.0, b: 174.0 };
     pub const CRAYOLA_VIOLET_RED:ColorRgbF = ColorRgbF { r: 247.0, g: 83.0, b: 148.0 };
     pub const CRAYOLA_VIVID_TANGERINE:ColorRgbF = ColorRgbF { r: 255.0, g: 160.0, b: 137.0 };
     pub const CRAYOLA_VIVID_VIOLET:ColorRgbF = ColorRgbF { r: 143.0, g: 80.0, b: 157.0 };

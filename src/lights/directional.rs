@@ -38,7 +38,7 @@ impl LightSource for DirectionalLight {
 						  1000,
 						  10000.0);
 	    match cast {
-		Some(x) => None,
+		Some(_) => None,
 		None => Some((clamped_map(dot, 0.0, 1.0, 0.0, self.intensity),
 			      self.color))
 	    }
