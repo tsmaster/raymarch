@@ -48,6 +48,9 @@ struct Args {
 
     #[clap(short = 'o', long = "output")]
     output_name: Option<String>,
+
+    #[clap(long, default_value_t = 0)]
+    frame_num: i32,
 }
 	
 
@@ -73,11 +76,30 @@ fn main() {
 	z: 0.0
     };
 
+    
     let camera_posn = Vec3f{
 	x: 10.0,
 	y: -8.0,
 	z: 6.0
     };
+
+    /*
+
+    let anim_duration = 20.0; // seconds
+    let fps = 20.0; //frames per second
+    let total_frames = (anim_duration * fps) as u32;
+
+    let anim_complete_frac = (args.frame_num as f32) / (total_frames as f32);
+
+
+    let theta = anim_complete_frac * 2.0 * std::f32::consts::PI;
+
+    let camera_posn = Vec3f{
+	x: 10.0 * f32::cos(theta),
+	y: 10.0 * f32::sin(theta),
+	z: 6.0
+    };    
+     */
     
     let look_posn = Vec3f{
 	x: 0.0,
@@ -392,35 +414,6 @@ fn write_image(filename: &str, pixels: &[u8], bounds: (usize, usize))
 	Err(e) => Err(Error::new(ErrorKind::Other, format!("png encode error: {}", e)))
     }
 }
-
-/*
-
-fn shade_sphere(v: Vec3f,
-		n: Vec3f,
-		_cam_pos: &Vec3f,
-		material_color: &ColorRgbF,
-		lights: &Vec::<Box<dyn LightSource + Sync>>) -> ColorRgbF {
-
-    let mut illum_color = ColorRgbF::BLACK;
-
-    for light in lights {
-	match light.get_illumination(&v, &n) {
-	    None => {}
-            Some((intensity, color)) => illum_color = illum_color + (color * intensity)
-	}
-    }
-
-    let r = (illum_color.r / 255.0) * material_color.r;
-    let g = (illum_color.g / 255.0) * material_color.g;
-    let b = (illum_color.b / 255.0) * material_color.b;
-
-    ColorRgbF {
-	r: r,
-	g: g,
-	b: b
-    }
-}*/
-
 
 fn get_illumination(v: Vec3f,
 		    n: Vec3f,
