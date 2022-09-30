@@ -44,4 +44,9 @@ impl LightSource for DirectionalLight {
 	    }
 	}
     }
+
+    fn get_direction(&self,
+		     _point: &Vec3f) -> Option<Vec3f> {
+	Some(self.direction)
+    }
 }

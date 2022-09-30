@@ -84,6 +84,14 @@ impl ColorRgbF {
 	}
     }
 
+    pub fn modulate(&self, o:&ColorRgbF) -> ColorRgbF {
+	ColorRgbF {
+	    r: (self.r / 255.0) * o.r,
+	    g: (self.g / 255.0) * o.g,
+	    b: (self.b / 255.0) * o.b,
+	}
+    }
+
     pub fn from_hsv(h: f32, s: f32, v: f32) -> ColorRgbF {
 	let chroma = v * s;
 	let hue_val = (h / 60.0) % 2.0 - 1.0;

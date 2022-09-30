@@ -84,14 +84,14 @@ fn main() {
 	z: 0.0
     };
 
-    
+    /*
     let camera_posn = Vec3f{
 	x: 10.0,
 	y: -8.0,
 	z: 6.0
     };
-
-    /*
+     */
+    
 
     let anim_duration = 20.0; // seconds
     let fps = 20.0; //frames per second
@@ -107,7 +107,6 @@ fn main() {
 	y: 10.0 * f32::sin(theta),
 	z: 6.0
     };    
-     */
     
     let look_posn = Vec3f{
 	x: 0.0,
@@ -134,10 +133,18 @@ fn main() {
 	near_shader: Box::new(CheckerShader{
 	    x_width: 6.0,
 	    y_width: 6.0,
-	    odd_shader: Box::new(DiffuseShader {
-		color: ColorRgbF::CRAYOLA_ALMOND}),
-	    even_shader: Box::new(DiffuseShader {
-		color: ColorRgbF::CRAYOLA_MIDNIGHT_BLUE}),
+	    odd_shader: Box::new(SpecularShader {
+		ambient_color: ColorRgbF::CRAYOLA_ALMOND,
+		diffuse_color: ColorRgbF::CRAYOLA_ALMOND,
+		specular_color: ColorRgbF::CRAYOLA_WHITE,
+		specular_power: 2.0
+	    }),
+	    even_shader: Box::new(SpecularShader {
+		ambient_color: ColorRgbF::CRAYOLA_MIDNIGHT_BLUE,
+		diffuse_color: ColorRgbF::CRAYOLA_MIDNIGHT_BLUE,
+		specular_color: ColorRgbF::CRAYOLA_WHITE,
+		specular_power: 4.0
+	    }),
 	}),
 	far_shader: Box::new(DiffuseShader {
 	    color: ColorRgbF::CRAYOLA_WILD_BLUE_YONDER}),
@@ -147,7 +154,7 @@ fn main() {
 
     lights.push(Box::new(AmbientLight {
 	color: ColorRgbF::WHITE,
-	intensity: 0.15
+	intensity: 0.2
     }));
 
     lights.push(Box::new(DirectionalLight {
@@ -157,7 +164,7 @@ fn main() {
 	    z: -4.0
 	},
 	color: ColorRgbF::WHITE,
-	intensity: 0.55
+	intensity: 0.5
     }));
 
     lights.push(Box::new(DirectionalLight {
@@ -169,7 +176,6 @@ fn main() {
 	color: ColorRgbF::CYAN,
 	intensity: 0.3
     }));
-
     
     // ring of spheres
     /*
@@ -190,7 +196,6 @@ fn main() {
 } */
 
     // single sphere scene
-    /*
     {
 	let sphere_posn = Vec3f {
 	    x: 0.0,
@@ -201,8 +206,14 @@ fn main() {
 	    center: sphere_posn,
 	    r:2.0
 	};
-	objects.push((Box::new(white_sphere), ColorRgbF::CRAYOLA_CARNATION_PINK));
-    }*/
+	objects.push((Box::new(white_sphere),
+		      Box::new(SpecularShader {
+			  ambient_color: ColorRgbF::CRAYOLA_WHITE,
+			  diffuse_color: ColorRgbF::CRAYOLA_WHITE,
+			  specular_color: ColorRgbF::CRAYOLA_WHITE,
+			  specular_power: 6.0
+		      })));
+    }
 
     // crayola crayon box
     /*
@@ -340,6 +351,7 @@ fn main() {
 		      color: ColorRgbF::CRAYOLA_GREEN})));
      */
     // infinite cylinder test
+    /*
     objects.push((Box::new(CylinderInfiniteX {
 	y: 1.0,
 	z: 1.0,
@@ -388,7 +400,7 @@ fn main() {
 		      color:ColorRgbF::CRAYOLA_VIOLET_PURPLE})));
 
     
-    
+    */
     
 
     let bounds = (1600, 900);
@@ -426,31 +438,17 @@ fn main() {
 						       &cam.posn,
 						       1000, 10000.0);
 
-			// This is a hack to get the ground to be
-			// checkered.  I have not yet written an
-			// object that has geometry and a shader.
 			let c = match hit {
 			    Some((idx, pos)) => {
 				let normal = calc_normal(&immut_objects[idx].0, pos);
-				let base_color = immut_objects[idx].1.get_base_color(&pos,
-										     &normal,
-										     &cam.posn);
-
-				let illum_color = get_illumination(pos,
-								   normal,
-								   &immut_lights,
-								   immut_objects
+				let shaded_color = immut_objects[idx].1.get_color(&pos,
+										  &normal,
+										  &cam.posn,
+										  &immut_lights,
+										  &immut_objects
+										       
 				);
-
-				let r = (illum_color.r / 255.0) * base_color.r;
-				let g = (illum_color.g / 255.0) * base_color.g;
-				let b = (illum_color.b / 255.0) * base_color.b;
-				    
-				ColorRgbF {
-				    r: r,
-				    g: g,
-				    b: b
-				}
+				shaded_color
 			    },
 			    None => {
 				sky_box.shoot_ray(*r)

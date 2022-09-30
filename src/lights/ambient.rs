@@ -20,4 +20,10 @@ impl LightSource for AmbientLight {
     ) -> Option<(f32, ColorRgbF)> {
 	Some((self.intensity, self.color))
     }
+
+
+    fn get_direction(&self,
+		     _point: &Vec3f) -> Option<Vec3f> {
+	None
+    }    
 }

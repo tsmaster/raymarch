@@ -11,6 +11,7 @@ pub struct Vec3f {
 
 #[allow(unused)]
 impl Vec3f {
+    pub const ZERO: Vec3f = Vec3f { x: 0.0, y: 0.0, z: 0.0 };
     pub const UP: Vec3f = Vec3f { x: 0.0, y: 0.0, z: 1.0 };
     pub const EAST: Vec3f = Vec3f { x: 1.0, y: 0.0, z: 0.0 };
     pub const NORTH: Vec3f = Vec3f { x: 0.0, y: 1.0, z: 0.0 };

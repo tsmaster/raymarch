@@ -401,3 +401,4 @@
 ./target/release/raymarch -o movie/frame_398.png --frame-num 398
 ./target/release/raymarch -o movie/frame_399.png --frame-num 399
 
+ffmpeg -s 800x450 -i movie/frame_%03d.png movie/movie.mp4
