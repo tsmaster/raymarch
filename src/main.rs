@@ -1,13 +1,3 @@
-use image::ColorType;
-use image::codecs::png::PngEncoder;
-use image::ImageEncoder;
-use std::collections::HashMap;
-use std::fs::File;
-use std::io::{Error, ErrorKind};
-use std::time::Instant;
-use clap::Parser;
-use crossbeam_channel::bounded;
-
 extern crate num_cpus;
 
 mod bdg_color;
@@ -22,8 +12,19 @@ mod shaders;
 mod sky;
 mod xkcd_color;
 
+use clap::Parser;
+use crossbeam_channel::bounded;
+use image::{ColorType, ImageEncoder};
+use image::codecs::png::PngEncoder;
+
+use std::collections::HashMap;
+use std::fs::File;
+use std::io::{Error, ErrorKind};
+use std::time::Instant;
+
+// TODO I probably don't need to be using all these use statements.
+use bdg_color::{ColorRgbF, ColorRgb8};
 use crate::cast::shoot_ray_at_objects;
-use math::{Vec3f, Ray};
 use geom::capsule::Capsule;
 use geom::cubebox::CubeBox;
 use geom::cylinder::CylinderCapped;
@@ -34,20 +35,20 @@ use geom::plane::ZPlusPlane;
 use geom::sphere::Sphere;
 use geom::torus::Torus;
 use geom::translate::OpTranslate;
-use bdg_color::{ColorRgbF, ColorRgb8};
 use lights::ambient::AmbientLight;
 use lights::cone::ConeLight;
 use lights::directional::DirectionalLight;
-use lights::point::PointLight;
 use lights::lightsource::LightSource;
+use lights::point::PointLight;
+use lights::point::FalloffConstant;
+use math::{Vec3f, Ray};
 use sdf::SDF;
-
-use shaders::diffuse::DiffuseShader;
-use shaders::specular::SpecularShader;
-use shaders::reflective::ReflectiveShader;
 use shaders::checker::CheckerShader;
+use shaders::diffuse::DiffuseShader;
 use shaders::distance_fade::DistanceFadeShader;
+use shaders::reflective::ReflectiveShader;
 use shaders::shader::Shader;
+use shaders::specular::SpecularShader;
 
 #[derive(Parser)]
 struct Args {
@@ -59,6 +60,9 @@ struct Args {
 
     #[clap(long, default_value_t = 0)]
     frame_num: i32,
+
+    #[clap(long, action)]
+    animate: bool,
 }
 	
 
@@ -84,30 +88,31 @@ fn main() {
 	z: 0.0
     };
 
-    /*
-    let camera_posn = Vec3f{
-	x: 10.0,
-	y: -8.0,
-	z: 6.0
+    let camera_posn = if args.animate {
+	println!("animated");
+	let anim_duration = 20.0; // seconds
+	let fps = 20.0; //frames per second
+	let total_frames = (anim_duration * fps) as u32;
+	
+	let anim_complete_frac = (args.frame_num as f32) / (total_frames as f32);
+
+
+	let theta = anim_complete_frac * 2.0 * std::f32::consts::PI;
+
+	Vec3f{
+	    x: 10.0 * f32::cos(theta),
+	    y: 10.0 * f32::sin(theta),
+	    z: 6.0
+	}
+    } else {
+	println!("not animated");
+	Vec3f{
+	    x: 10.0,
+	    y: -8.0,
+	    z: 6.0
+	}
     };
-     */
-    
 
-    let anim_duration = 20.0; // seconds
-    let fps = 20.0; //frames per second
-    let total_frames = (anim_duration * fps) as u32;
-
-    let anim_complete_frac = (args.frame_num as f32) / (total_frames as f32);
-
-
-    let theta = anim_complete_frac * 2.0 * std::f32::consts::PI;
-
-    let camera_posn = Vec3f{
-	x: 10.0 * f32::cos(theta),
-	y: 10.0 * f32::sin(theta),
-	z: 6.0
-    };    
-    
     let look_posn = Vec3f{
 	x: 0.0,
 	y: 0.0,
@@ -147,11 +152,12 @@ fn main() {
 	    }),
 	}),
 	far_shader: Box::new(DiffuseShader {
-	    color: ColorRgbF::CRAYOLA_WILD_BLUE_YONDER}),
+	    color: ColorRgbF::CRAYOLA_BLACK}),
     })));
 
     let mut lights = Vec::<Box<dyn LightSource + Sync>>::new();
 
+    /*
     lights.push(Box::new(AmbientLight {
 	color: ColorRgbF::WHITE,
 	intensity: 0.2
@@ -176,7 +182,19 @@ fn main() {
 	color: ColorRgbF::CYAN,
 	intensity: 0.3
     }));
-    
+     */
+
+    lights.push(Box::new(PointLight {
+	posn: Vec3f {
+	    x: 8.0,
+	    y: 0.0,
+	    z: 10.0
+	},
+	color: ColorRgbF::WHITE,
+	falloff: FalloffConstant {
+	    intensity: 1.0
+	}
+    }));
     // ring of spheres
     /*
     for angle in (0..360).step_by(30) {
@@ -196,6 +214,7 @@ fn main() {
 } */
 
     // single sphere scene
+
     {
 	let sphere_posn = Vec3f {
 	    x: 0.0,
@@ -513,26 +532,6 @@ fn write_image(filename: &str, pixels: &[u8], bounds: (usize, usize))
 	Err(e) => Err(Error::new(ErrorKind::Other, format!("png encode error: {}", e)))
     }
 }
-
-fn get_illumination(v: Vec3f,
-		    n: Vec3f,
-		    lights: &Vec::<Box<dyn LightSource + Sync>>,
-		    objects: &Vec::<(Box<dyn SDF + Sync>,
-				     Box<dyn Shader + Sync>)>) -> ColorRgbF {
-
-    let mut illum_color = ColorRgbF::BLACK;
-
-    for light in lights {
-	match light.get_illumination(&v, &n, objects) {
-	    None => {}
-            Some((intensity, color)) => illum_color = illum_color + (color * intensity)
-	}
-    }
-
-    illum_color
-}
-
-
 
 fn calc_normal(obj:&Box<dyn SDF + Sync>, pos: Vec3f) -> Vec3f {
     let epsilon = 0.001;

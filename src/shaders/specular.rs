@@ -50,12 +50,12 @@ impl SpecularShader {
 					     &empty_objs) {
 			Some((i, color)) => {
 			    //println!("found illum {} {:?}", i, color);
-			    let color_w_intensity = color * i;
+			    //let color_w_intensity = color * i;
 			    //println!("color w intensity {:?}", color_w_intensity);
 
 			    //println!("ambient color: {:?}", self.ambient_color);
 
-			    let modulated_color = color_w_intensity.modulate(&self.ambient_color);
+			    //let modulated_color = color_w_intensity.modulate(&self.ambient_color);
 			    //println!("modulated color {:?}", modulated_color);
 			    
 			    accum_color = accum_color + (color * i).modulate(

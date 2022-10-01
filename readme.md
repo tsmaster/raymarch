@@ -10,6 +10,7 @@ and have fun making computer graphics.
   - triangle mesh
   - capped cone
   - teapot?
+    - bezier patch
 - boolean composition
   - union
   - difference
@@ -19,7 +20,9 @@ and have fun making computer graphics.
 - transformations
   - scale(?)
   - rotation
-- preludes for submodules
+  - combined rotation and translation as a matrix
+- rewrite modules to have a <directory>.rs at toplevel
+  - https://stackoverflow.com/questions/26435102/in-rust-what-is-the-purpose-of-a-mod-rs-file
   - geom
   - lights
   - colors
