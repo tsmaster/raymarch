@@ -12,9 +12,6 @@ and have fun making computer graphics.
   - teapot?
     - bezier patch
 - boolean composition
-  - union
-  - difference
-  - intersection
   - smooth addition
   - rounded corners
 - transformations
@@ -60,6 +57,13 @@ and have fun making computer graphics.
   - 1.5cm x 2.5cm x 7.5cm
   - wood (above)
 - soft shadows
+- revisit sky
+  - just a shader?
+  - implement star map
+  - maybe a city skyline
+  - trees
+- support RGBA output
+  - useful when rendering without a sky
 
 ## Done
 
@@ -94,6 +98,10 @@ and have fun making computer graphics.
 - sdf transformations
   - translation
 - cmdline arg for resolution
+- boolean operators
+  - union
+  - difference
+  - intersection
 
 
 ## References

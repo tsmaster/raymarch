@@ -6,7 +6,7 @@
 use crate::bdg_color::ColorRgbF;
 use crate::geom::capsule::Capsule;
 use crate::geom::cubebox::CubeBox;
-use crate::geom::cylinder::CylinderCapped;
+use crate::geom::cylinder::{CylinderCappedY, CylinderCappedZ};
 use crate::geom::cylinder::CylinderInfiniteX;
 use crate::geom::cylinder::CylinderInfiniteY;
 use crate::geom::cylinder::CylinderInfiniteZ;
@@ -20,6 +20,8 @@ use crate::lights::directional::DirectionalLight;
 use crate::lights::point::{PointLight, FalloffConstant};
 use crate::math::Vec3f;
 use crate::math;
+use crate::operators;
+use crate::operators::boolean::{OpSubtraction};
 use crate::scene;
 use crate::shaders::checker::CheckerShader;
 use crate::shaders::diffuse::DiffuseShader;
@@ -205,7 +207,7 @@ pub fn add_crayola_crayon_spheres_objects(sb: &mut scene::SceneBuilder) {
 		  Box::new(DiffuseShader {
 		      color: ColorRgbF::CRAYOLA_BLACK}));
 
-    
+
 
     sb.add_object(Box::new(Sphere {
 	center: Vec3f {
@@ -250,7 +252,7 @@ pub fn add_crayola_crayon_spheres_objects(sb: &mut scene::SceneBuilder) {
     }),
 		  Box::new(DiffuseShader {
 		      color: ColorRgbF::CRAYOLA_PURPLE}));
-    
+
     sb.add_object(Box::new(Sphere {
 	center: Vec3f {
 	    x: spc,
@@ -261,7 +263,7 @@ pub fn add_crayola_crayon_spheres_objects(sb: &mut scene::SceneBuilder) {
     }),
 		  Box::new(DiffuseShader {
 		      color: ColorRgbF::CRAYOLA_BLUE}));
-    
+
     sb.add_object(Box::new(Sphere {
 	center: Vec3f {
 	    x: -spc,
@@ -271,7 +273,7 @@ pub fn add_crayola_crayon_spheres_objects(sb: &mut scene::SceneBuilder) {
 	r: sphere_rad
     }),
 		  Box::new(DiffuseShader {
-		      color: ColorRgbF::CRAYOLA_ORANGE}));    
+		      color: ColorRgbF::CRAYOLA_ORANGE}));
 }
 
 pub fn add_box_test_objects(sb: &mut scene::SceneBuilder) {
@@ -344,7 +346,7 @@ pub fn add_infinite_cylinder_test_objects(sb: &mut scene::SceneBuilder) {
 		  Box::new(DiffuseShader {
 		      color:ColorRgbF::CRAYOLA_YELLOW}));
 
-    sb.add_object(Box::new(CylinderCapped {
+    sb.add_object(Box::new(CylinderCappedY {
 	h: 4.0,
 	r: 1.5
     }),
@@ -366,5 +368,90 @@ pub fn add_infinite_cylinder_test_objects(sb: &mut scene::SceneBuilder) {
     }),
 		  Box::new(DiffuseShader {
 		      color:ColorRgbF::CRAYOLA_VIOLET_PURPLE}));
+
+}
+
+
+
+pub fn add_disc_with_holes_objects(sb: &mut scene::SceneBuilder) {
+
+    let disk = Box::new(OpTranslate {
+	v: Vec3f {
+	    x: 0.0,
+	    y: 0.0,
+	    z: 3.0
+	},
+	primitive: Box::new(CylinderCappedZ {
+	    h:0.5,
+	    r:3.0
+	})
+    });
+
+    let cyl1 = 
+	Box::new(OpTranslate {
+	    v: Vec3f {
+		x: 1.0,
+		y: 1.0,
+		z: 1.5
+	    },
+	    primitive: Box::new(CylinderCappedZ {
+		h:3.0,
+		r:0.8
+	    })
+	});
+    
+    let cyl2 = 
+	Box::new(OpTranslate {
+	    v: Vec3f {
+		x: -1.0,
+		y: -1.0,
+		z: 1.5
+	    },
+	    primitive: Box::new(CylinderCappedZ {
+		h:3.0,
+		r:0.8
+	    })
+	});
+
+    let disk_minus_cyls = 
+	Box::new(OpSubtraction {
+	    primitive1: Box::new(OpSubtraction {
+		primitive1: disk,
+		primitive2: cyl1
+	    }),
+	    primitive2: cyl2
+	});
+    
+    let sphere_nw = Box::new(Sphere {
+	center: Vec3f {
+	    x: -1.0,
+	    y: 1.0,
+	    z: 3.5
+	},
+	r: 0.8
+    });
+
+    let sphere_se = Box::new(Sphere {
+	center: Vec3f {
+	    x: 1.0,
+	    y: -1.0,
+	    z: 3.5
+	},
+	r: 0.8
+    });
+
+    let disk_minus_spheres =
+	Box::new(OpSubtraction {
+	    primitive1: Box::new(OpSubtraction {
+		primitive1: disk_minus_cyls,
+		primitive2: sphere_nw
+	    }),
+	    primitive2: sphere_se
+	});
+
+    sb.add_object(
+	disk_minus_spheres,
+	Box::new(DiffuseShader {
+	    color:ColorRgbF::CRAYOLA_YELLOW}));
 
 }

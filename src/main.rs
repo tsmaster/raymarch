@@ -7,6 +7,7 @@ mod crayola_color;
 mod geom;
 mod lights;
 mod math;
+mod operators;
 mod scene;
 mod sdf;
 mod shaders;
@@ -110,10 +111,17 @@ fn main() {
 	}
     } else {
 	println!("not animated");
+	/*
 	Vec3f{
 	    x: 10.0,
 	    y: -8.0,
 	    z: 6.0
+    }*/
+
+	Vec3f {
+	    x: 5.0,
+	    y: -4.0,
+	    z: 10.0
 	}
     };
 
@@ -136,11 +144,12 @@ fn main() {
 
     let mut sb = scene::SceneBuilder::new(cam, sky_box);
     scene::test_scenes::add_checkerboard_floor(&mut sb);
-    //scene::test_scenes::add_three_dir_lights(&mut sb);
+    scene::test_scenes::add_three_dir_lights(&mut sb);
     //scene::test_scenes::add_point_light(&mut sb);
-    scene::test_scenes::add_cone_light(&mut sb);
-    scene::test_scenes::add_ring_of_spheres_objects(&mut sb);
+    //scene::test_scenes::add_cone_light(&mut sb);
+    //scene::test_scenes::add_ring_of_spheres_objects(&mut sb);
     //scene::test_scenes::add_crayola_crayon_spheres_objects(&mut sb);
+    scene::test_scenes::add_disc_with_holes_objects(&mut sb);
     
     let scene = scene::build_scene(sb);
 

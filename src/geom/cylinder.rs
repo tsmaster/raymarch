@@ -54,12 +54,12 @@ impl SDF for CylinderInfiniteZ {
 
 
 #[derive(Debug, Copy, Clone)]
-pub struct CylinderCapped {
+pub struct CylinderCappedY {
     pub h: f32,
     pub r: f32
 }
 
-impl SDF for CylinderCapped {
+impl SDF for CylinderCappedY {
     fn dist(&self, point: &Vec3f) -> f32 {
 
 	let hr = Vec2f {
@@ -79,4 +79,34 @@ impl SDF for CylinderCapped {
 	f32::min(f32::max(d.x, d.y), 0.0) + d.max(0.0).len()
     }
 }
+
+
+
+#[derive(Debug, Copy, Clone)]
+pub struct CylinderCappedZ {
+    pub h: f32,
+    pub r: f32
+}
+
+impl SDF for CylinderCappedZ {
+    fn dist(&self, point: &Vec3f) -> f32 {
+
+	let hr = Vec2f {
+	    x: self.r,
+	    y: self.h
+	};
+
+	let xy = Vec2f {
+	    x: point.x,
+	    y: point.y
+	};
+	
+	let d = Vec2f {
+	    x: xy.len(),
+	    y: point.z}.abs() - hr;
+
+	f32::min(f32::max(d.x, d.y), 0.0) + d.max(0.0).len()
+    }
+}
+
 
