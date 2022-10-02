@@ -306,11 +306,13 @@ I added Constructive Solid Geometry (CSG) boolean operations, so now I
 can take a disk, subtract two cylinders, and then subtract two spheres
 and get a weird button shape:
 
+![button_2022_10_02](https://user-images.githubusercontent.com/72338/193465771-88d71abd-1cc2-46d0-89b0-a0ba092bd9ca.png)
 
 
 I also made a variant of my checkerboard shader to make a graph paper
 shader:
 
+![graph_paper_2022_10_02](https://user-images.githubusercontent.com/72338/193465781-44d5f440-33dd-4521-ad7e-75807281032b.png)
 
 
 The super thin lines on the graph paper lead me to want to do
