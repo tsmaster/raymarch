@@ -297,3 +297,22 @@ I added a cone light. I like it; it feels dramatic and a little spooky
 as we enter October.
 
 ![spheres_2022_10_01b](https://user-images.githubusercontent.com/72338/193436243-d45b7c9b-54fe-4526-9a6a-982d28e5ca37.png)
+
+
+
+### October 2, 2022
+
+I added Constructive Solid Geometry (CSG) boolean operations, so now I
+can take a disk, subtract two cylinders, and then subtract two spheres
+and get a weird button shape:
+
+
+
+I also made a variant of my checkerboard shader to make a graph paper
+shader:
+
+
+
+The super thin lines on the graph paper lead me to want to do
+randomized supersampling to reduce some of the jaggies.
+

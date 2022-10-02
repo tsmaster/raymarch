@@ -25,6 +25,7 @@ use crate::scene;
 use crate::shaders::checker::CheckerShader;
 use crate::shaders::diffuse::DiffuseShader;
 use crate::shaders::distance_fade::DistanceFadeShader;
+use crate::shaders::graphpaper::GraphPaperXYShader;
 use crate::shaders::specular::SpecularShader;
 
 pub fn add_checkerboard_floor(sb: &mut scene::SceneBuilder) {
@@ -56,6 +57,69 @@ pub fn add_checkerboard_floor(sb: &mut scene::SceneBuilder) {
 			  color: ColorRgbF::CRAYOLA_BLACK}),
 		  }));
 }
+
+
+pub fn add_graphpaper_floor(sb: &mut scene::SceneBuilder) {
+    let p = ZPlusPlane {
+	z: 0.0
+    };
+
+    sb.add_object(Box::new(p),
+		  Box::new(DistanceFadeShader {
+		      near_dist: 50.0,
+		      far_dist: 250.0,
+		      near_shader: Box::new(GraphPaperXYShader{
+			  line_period: 5.0,
+			  line_width: 0.1,
+			  line_fade_width: 0.05,
+			  paper_shader: Box::new(DiffuseShader {
+			      color: ColorRgbF::CRAYOLA_ALMOND,
+			  }),
+			  line_shader: Box::new(DiffuseShader {
+			      color: ColorRgbF::CRAYOLA_BLACK,
+			  }),
+		      }),
+		      far_shader: Box::new(DiffuseShader {
+			  color: ColorRgbF::CRAYOLA_GRAY}),
+		  }));
+}
+
+pub fn add_graphpaper_5_floor(sb: &mut scene::SceneBuilder) {
+    let p = ZPlusPlane {
+	z: 0.0
+    };
+
+    sb.add_object(Box::new(p),
+		  Box::new(DistanceFadeShader {
+		      near_dist: 50.0,
+		      far_dist: 250.0,
+		      near_shader: Box::new(GraphPaperXYShader{
+			  line_period: 5.0,
+			  line_width: 0.1,
+			  line_fade_width: 0.05,
+			  paper_shader: Box::new(GraphPaperXYShader{
+			      line_period: 1.0,
+			      line_width: 0.02,
+			      line_fade_width: 0.01,
+			      paper_shader: Box::new(DiffuseShader {
+				  color: ColorRgbF::CRAYOLA_WHITE,
+			      }),
+			      line_shader: Box::new(DiffuseShader {
+				  color: ColorRgbF::CRAYOLA_GRAY,
+			      })
+			  }),
+			  line_shader: Box::new(DiffuseShader {
+			      color: ColorRgbF::CRAYOLA_BLACK,
+			  }),
+		      }),
+		      far_shader: Box::new(DiffuseShader {
+			  color: ColorRgbF::CRAYOLA_GRAY}),
+		  }));
+}
+
+
+
+
 
 pub fn add_three_dir_lights(sb: &mut scene::SceneBuilder) {
     sb.add_light(Box::new(AmbientLight {
