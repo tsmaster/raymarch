@@ -98,21 +98,19 @@ impl ColorRgbF {
 	let x = chroma * (1.0 - f32::abs(hue_val));
 	let m = v - chroma;
 
-	let mut rgb_p = (0.0, 0.0, 0.0);
-
-	if h < 60.0 {
-	    rgb_p = (chroma, x, 0.0);
+	let rgb_p = if h < 60.0 {
+	    (chroma, x, 0.0)
 	} else if h < 120.0 {
-	    rgb_p = (x, chroma, 0.0);
+	    (x, chroma, 0.0)
 	} else if h < 180.0 {
-	    rgb_p = (0.0, chroma, x);
+	    (0.0, chroma, x)
 	} else if h < 240.0 {
-	    rgb_p = (0.0, x, chroma);
+	    (0.0, x, chroma)
 	} else if h < 300.0 {
-	    rgb_p = (x, 0.0, chroma);
+	    (x, 0.0, chroma)
 	} else {
-	    rgb_p = (chroma, 0.0, x);
-	}
+	    (chroma, 0.0, x)
+	};
 
 	ColorRgbF {
 	    r:(rgb_p.0 + m) * 255.0,

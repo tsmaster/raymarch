@@ -3,11 +3,11 @@
 // do the full ambient + diffuse + specular Phong shading model
 // https://www.geeksforgeeks.org/phong-model-specular-reflection-in-computer-graphics/
 
-use crate::math::Vec3f;
-use crate::bdg_color::ColorRgbF;
-use crate::Shader;
-use crate::LightSource;
 use crate::SDF;
+use crate::shaders::shader::Shader;
+use crate::bdg_color::ColorRgbF;
+use crate::lights::lightsource::LightSource;
+use crate::math::Vec3f;
 
 pub struct SpecularShader {
     pub ambient_color: ColorRgbF,
@@ -48,16 +48,7 @@ impl SpecularShader {
 		    match l.get_illumination(&Vec3f::ZERO,
 					     &Vec3f::ZERO,
 					     &empty_objs) {
-			Some((i, color)) => {
-			    //println!("found illum {} {:?}", i, color);
-			    //let color_w_intensity = color * i;
-			    //println!("color w intensity {:?}", color_w_intensity);
-
-			    //println!("ambient color: {:?}", self.ambient_color);
-
-			    //let modulated_color = color_w_intensity.modulate(&self.ambient_color);
-			    //println!("modulated color {:?}", modulated_color);
-			    
+			Some((i, color)) => {			    
 			    accum_color = accum_color + (color * i).modulate(
 				&self.ambient_color);
 			},

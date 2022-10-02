@@ -2,9 +2,9 @@
 
 use crate::bdg_color::ColorRgbF;
 use crate::math::Vec3f;
-use crate::LightSource;
+use crate::lights::lightsource::LightSource;
 use crate::SDF;
-use crate::Shader;
+use crate::shaders::shader::Shader;
 
 pub struct AmbientLight {
     pub color: ColorRgbF,

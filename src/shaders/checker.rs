@@ -1,10 +1,10 @@
 // shaders/checker.rs
 
-use crate::math::Vec3f;
-use crate::bdg_color::ColorRgbF;
-use crate::Shader;
-use crate::LightSource;
 use crate::SDF;
+use crate::shaders::shader::Shader;
+use crate::bdg_color::ColorRgbF;
+use crate::lights::lightsource::LightSource;
+use crate::math::Vec3f;
 
 pub struct CheckerShader {
     pub x_width: f32,

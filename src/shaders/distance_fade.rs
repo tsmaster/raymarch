@@ -1,11 +1,11 @@
 // shaders/distance_fade.rs
 
 
-use crate::math::{Vec3f, clamped_map};
-use crate::bdg_color::ColorRgbF;
-use crate::Shader;
-use crate::LightSource;
 use crate::SDF;
+use crate::shaders::shader::Shader;
+use crate::bdg_color::ColorRgbF;
+use crate::lights::lightsource::LightSource;
+use crate::math::{Vec3f, clamped_map};
 
 pub struct DistanceFadeShader {
     pub near_dist: f32,

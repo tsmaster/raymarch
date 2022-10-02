@@ -2,11 +2,11 @@
 //
 // Should be a calculation of objects with diffuse shading, currently just a flat shader TODO
 
-use crate::math::Vec3f;
+use crate::sdf::SDF;
+use crate::shaders::shader::Shader;
 use crate::bdg_color::ColorRgbF;
-use crate::Shader;
-use crate::LightSource;
-use crate::SDF;
+use crate::lights::lightsource::LightSource;
+use crate::math::Vec3f;
 
 pub struct DiffuseShader {
     pub color: ColorRgbF,
@@ -14,16 +14,93 @@ pub struct DiffuseShader {
 
 impl Shader for DiffuseShader {
     fn get_color(&self,
-		 _point: &Vec3f,
-		 _normal: &Vec3f,
-		 _cam_posn: &Vec3f,
-		 _lights: &Vec::<Box<dyn LightSource + Sync>>,
-		 _objects: &Vec::<(Box<dyn SDF + Sync>,
-				   Box<dyn Shader + Sync>)>
+		 point: &Vec3f,
+		 normal: &Vec3f,
+		 cam_posn: &Vec3f,
+		 lights: &Vec::<Box<dyn LightSource + Sync>>,
+		 objects: &Vec::<(Box<dyn SDF + Sync>,
+				  Box<dyn Shader + Sync>)>
 		      
     ) -> ColorRgbF {
+	self.get_ambient_color(lights) + self.get_directional_color(point,
+								    normal,
+								    cam_posn,
+								    lights,
+								    objects
+								    )
+    }
+}
 
-	// TODO calc diffuse falloff here
-	self.color
+
+
+impl DiffuseShader {
+    fn get_ambient_color(&self,
+			 lights: &Vec::<Box<dyn LightSource + Sync>>
+    ) -> ColorRgbF {
+	let mut accum_color = ColorRgbF::BLACK;
+
+	let empty_objs = vec!();
+
+	for l in lights {
+	    match l.get_direction(&Vec3f::ZERO) {
+		None => {
+		    match l.get_illumination(&Vec3f::ZERO,
+					     &Vec3f::ZERO,
+					     &empty_objs) {
+			Some((i, color)) => {			    
+			    accum_color = accum_color + (color * i).modulate(
+				&self.color);
+			},
+			None => {}
+		    }
+		},
+		Some(_) => {}
+	    }
+	}
+
+	accum_color
+    }
+
+    fn get_directional_color(&self,
+			     point: &Vec3f,
+			     normal: &Vec3f,
+			     cam_posn: &Vec3f,
+			     lights: &Vec::<Box<dyn LightSource + Sync>>,
+			     objects: &Vec::<(Box<dyn SDF + Sync>,
+					      Box<dyn Shader + Sync>)>
+    ) -> ColorRgbF {
+
+	// Cd * (N dot L)
+
+	let mut accum_color = ColorRgbF::BLACK;
+
+	let normalized_normal = normal.normalized();
+	let view_vec = &(*cam_posn - *point).normalized(); // vector TO camera
+
+	for l in lights {
+	    match l.get_direction(point) {
+		None => {},
+		Some(light_vec) => {
+		    let out_light_vec = (light_vec * -1.0).normalized(); // vector leaving point
+
+		    // R = N * (N dot L * 2) - L
+		    let reflected_light_vec = normalized_normal *
+			(normalized_normal.dot(&out_light_vec) * 2.0) -
+			out_light_vec;
+
+		    match l.get_illumination(point,
+					     normal,
+					     objects) {
+			None => {},
+			Some ((i, light_color)) => {
+			    accum_color = accum_color +
+				(i * light_color).modulate(&(self.color * normalized_normal.dot(&out_light_vec)));
+			}
+		    }
+		}
+	    }
+	}
+	
+	accum_color
     }
 }

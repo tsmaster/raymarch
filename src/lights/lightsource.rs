@@ -5,7 +5,7 @@
 use crate::bdg_color::ColorRgbF;
 use crate::math::Vec3f;
 use crate::SDF;
-use crate::Shader;
+use crate::shaders::shader::Shader;
 
 pub trait LightSource {
     fn get_illumination(&self,

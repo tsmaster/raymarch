@@ -1,11 +1,11 @@
 // lights/directional.rs
 
-use crate::math::{Vec3f, Ray, clamped_map};
-use crate::bdg_color::ColorRgbF;
-use crate::LightSource;
 use crate::SDF;
-use crate::Shader;
+use crate::bdg_color::ColorRgbF;
 use crate::cast;
+use crate::lights::lightsource::LightSource;
+use crate::math::{Vec3f, Ray, clamped_map};
+use crate::shaders::shader::Shader;
 
 pub struct DirectionalLight {
     pub direction:Vec3f, // direction the light goes

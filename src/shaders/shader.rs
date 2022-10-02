@@ -2,10 +2,10 @@
 //
 // define a trait for shaders
 
-use crate::bdg_color::ColorRgbF;
-use crate::math::Vec3f;
-use crate::LightSource;
 use crate::SDF;
+use crate::bdg_color::ColorRgbF;
+use crate::lights::lightsource::LightSource;
+use crate::math::Vec3f;
 
 pub trait Shader {
     fn get_color(&self, point: &Vec3f,

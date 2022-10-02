@@ -5,7 +5,7 @@ use crate::cast;
 use crate::bdg_color::ColorRgbF;
 use crate::lights::lightsource::LightSource;
 use crate::SDF;
-use crate::Shader;
+use crate::shaders::shader::Shader;
 
 pub struct PointLight<F : DistanceFalloff> {
     pub posn:Vec3f,
