@@ -242,7 +242,7 @@ https://youtu.be/chuv2k4AczM
 The one visible thing that I've done today was to create a point light
 source:
 
-
+![spheres_2022_10_01a](https://user-images.githubusercontent.com/72338/193434914-0860f4c1-6dc2-4e34-ad87-23bfa383f395.png)
 
 If you look at the checkins for today, though, I've touched just about
 everything. Most of that is cleaning up my "use" blocks at the top of
