@@ -287,3 +287,5 @@ support, including shadowing, which I think wasn't there before.
 [Update]
 I added a cone light. I like it; it feels dramatic and a little spooky
 as we enter October.
+
+![spheres_2022_10_01b](https://user-images.githubusercontent.com/72338/193436243-d45b7c9b-54fe-4526-9a6a-982d28e5ca37.png)
