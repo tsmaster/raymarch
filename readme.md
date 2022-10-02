@@ -45,7 +45,6 @@ and have fun making computer graphics.
   - BSDF - surface descriptions including BRDF (reflection) and BTDF (transmission)
     - https://math.hws.edu/graphicsbook/c8/s2.html
 - lights
-  - point
   - cone
   - lights probably have position/direction
   - lights probably have a color
@@ -94,6 +93,7 @@ and have fun making computer graphics.
 - lights
   - directional
   - ambient
+  - point
 - shadows
   - using ray marching proximity technique
 - materials  
@@ -236,5 +236,58 @@ start point further away than that.
 Also, movie on YouTube:
 
 https://youtu.be/chuv2k4AczM
+
+### October 1, 2022
+
+The one visible thing that I've done today was to create a point light
+source:
+
+
+
+If you look at the checkins for today, though, I've touched just about
+everything. Most of that is cleaning up my "use" blocks at the top of
+many files. The Rust compiler is pretty good about giving you usable
+suggestions, but the "use" suggestions it gives you can lead you to a
+big list individual references, which isn't the best practice,
+according to the book I'm currently reading.
+
+Another thing I refactored was the way I'm handling scenes. For one
+thing, now there's a Scene struct, which contains objects and lights
+and a camera and a sky sphere (probably want to rewrite the sky sphere
+thing, it's really just a shader - more thinking to be done).
+
+So, what I wanted to do was something like "make a Scene with objects
+from this vector of objects (the checkerboard floor) and this vector
+of objects (some spheres) and some other vector of objects (a lamp
+post, maybe). But to do that, I made a SceneBuilder, which is designed
+to be mutable, and it was going to take a vector, but that wanted my
+objects to be Copy and/or Clone-able, which they aren't, and stacking
+up traits is tricky (they're already SDF trait objects, and adding
+Clone to them seems like not what I want to do.
+
+In the book I'm reading, I just read a section that talks about when
+you want to use generics vs when you want to use traits. Maybe I
+should reconsider some of the methods that currently take a Box<dyn
+SDF + Sync>, maybe they could be generic, taking in a <S: SDF + Sync>
+or some such. Generics are handled at compile-time, which could be a
+benefit, but since the code I'm thinking about right now is building
+the scene, that's not a huge win.
+
+I should probably push this scene object through the various different
+lighting and shading code that currently takes a list of lights and a
+list of objects. That's what the scene is for, so that should tidy up
+the code a bit.
+
+With this refactoring, I went back to rebuild earlier test images -
+Testing is Awesome! But then I panicked when some images turned out
+flat shaded instead of diffuse shaded. I'm pretty sure what happened
+along the way was that I had made earlier renders with a placeholder
+diffuse implementation that never made it in to the Diffuse shader
+object that I have now, so my building out of diffuse, ambient,
+specular material implementations broke the old images. So I copied a
+big chunk of code (sigh) from the specular material, pasted it in the
+diffuse file, and deleted the glossy highlight. Bango, diffuse
+support, including shadowing, which I think wasn't there before.
+
 
 

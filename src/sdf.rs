@@ -8,4 +8,5 @@ pub trait SDF {
     fn dist(&self, point: &Vec3f) -> f32;
 }
 
-pub trait CopySDF: SDF + Copy{}
+// pub trait CopySDF: SDF + Copy{}
+
