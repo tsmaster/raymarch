@@ -64,7 +64,7 @@ impl DiffuseShader {
     fn get_directional_color(&self,
 			     point: &Vec3f,
 			     normal: &Vec3f,
-			     cam_posn: &Vec3f,
+			     _cam_posn: &Vec3f,
 			     lights: &Vec::<Box<dyn LightSource + Sync>>,
 			     objects: &Vec::<(Box<dyn SDF + Sync>,
 					      Box<dyn Shader + Sync>)>
@@ -75,18 +75,12 @@ impl DiffuseShader {
 	let mut accum_color = ColorRgbF::BLACK;
 
 	let normalized_normal = normal.normalized();
-	let view_vec = &(*cam_posn - *point).normalized(); // vector TO camera
 
 	for l in lights {
 	    match l.get_direction(point) {
 		None => {},
 		Some(light_vec) => {
 		    let out_light_vec = (light_vec * -1.0).normalized(); // vector leaving point
-
-		    // R = N * (N dot L * 2) - L
-		    let reflected_light_vec = normalized_normal *
-			(normalized_normal.dot(&out_light_vec) * 2.0) -
-			out_light_vec;
 
 		    match l.get_illumination(point,
 					     normal,

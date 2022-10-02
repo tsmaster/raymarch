@@ -20,7 +20,6 @@ use crate::lights::directional::DirectionalLight;
 use crate::lights::point::{PointLight, FalloffConstant};
 use crate::math::Vec3f;
 use crate::math;
-use crate::operators;
 use crate::operators::boolean::{OpSubtraction};
 use crate::scene;
 use crate::shaders::checker::CheckerShader;
