@@ -44,13 +44,6 @@ and have fun making computer graphics.
     - https://en.wikipedia.org/wiki/Bidirectional_reflectance_distribution_function
   - BSDF - surface descriptions including BRDF (reflection) and BTDF (transmission)
     - https://math.hws.edu/graphicsbook/c8/s2.html
-- lights
-  - cone
-  - lights probably have position/direction
-  - lights probably have a color
-  - lights may have some sort of intensity/falloff
-  - intensity for diffuse (should this be on lights?)
-  - intensity for specular (should this be on lights?)
 - simplex(?) noise https://docs.rs/noise/latest/noise/
 - fog
 - GLTF loading
@@ -94,6 +87,7 @@ and have fun making computer graphics.
   - directional
   - ambient
   - point
+  - cone
 - shadows
   - using ray marching proximity technique
 - materials  
@@ -290,4 +284,6 @@ diffuse file, and deleted the glossy highlight. Bango, diffuse
 support, including shadowing, which I think wasn't there before.
 
 
-
+[Update]
+I added a cone light. I like it; it feels dramatic and a little spooky
+as we enter October.
