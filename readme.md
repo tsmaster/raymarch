@@ -56,7 +56,6 @@ and have fun making computer graphics.
 - "scene" container for lights, renderable objects
   - loadable from JSON, above
 - cmdline arg for JSON filename
-- cmdline arg for resolution
 - jenga blocks
   - 1.5cm x 2.5cm x 7.5cm
   - wood (above)
@@ -94,6 +93,7 @@ and have fun making computer graphics.
   - checkerboard (see RMC p345)
 - sdf transformations
   - translation
+- cmdline arg for resolution
 
 
 ## References

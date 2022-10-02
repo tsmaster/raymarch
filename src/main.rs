@@ -22,6 +22,7 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{Error, ErrorKind};
 use std::time::Instant;
+use std::str::FromStr;
 
 use bdg_color::{ColorRgbF, ColorRgb8};
 use crate::cast::shoot_ray_at_objects;
@@ -33,7 +34,7 @@ struct Args {
     #[clap(long)]
     num_threads: Option<i32>,
 
-    #[clap(short = 'o', long = "output")]
+    #[clap(short = 'o', long = "output", forbid_empty_values = true)]
     output_name: Option<String>,
 
     #[clap(long, default_value_t = 0)]
@@ -41,6 +42,35 @@ struct Args {
 
     #[clap(long, action)] // workaround for boolean flag
     animate: bool,
+
+    #[clap(short, long, value_parser = parse_res)]
+    resolution: Option<(usize, usize)>,
+}
+
+fn parse_res(s: &str) -> Result<(usize, usize), String> {
+    match split_res(s, ',') {
+	Some((x, y)) => Ok((x, y)),
+	_ => match split_res(s, 'x') {
+	    Some((x, y)) => Ok((x,y)),
+	    _ => Err(format!(
+		"Unparsable resolution str {}. Use , or x",
+		s
+	    ))
+	}
+    }		    
+}
+
+fn split_res<T:FromStr>(s: &str, separator: char) -> Option<(T, T)> {
+    match s.find(separator) {
+	None => None,
+	Some(index) => {
+	    match (T::from_str(&s[..index]),
+		   T::from_str(&s[index +1 ..])) {
+		(Ok(l), Ok(r)) => Some((l,r)),
+		_ => None
+	    }
+	}
+    }
 }
 	
 
@@ -114,8 +144,13 @@ fn main() {
     
     let scene = scene::build_scene(sb);
 
-    let bounds = (1600, 900);
-    //let bounds = (160, 90);
+    
+    let bounds = match args.resolution {
+	None => (1600, 900),
+	Some(r) => r
+    };
+
+    println!("rendering {:?}", bounds);
 
     let mut pixels = vec![0; 3 * bounds.0 * bounds.1];
 
