@@ -77,6 +77,19 @@ impl Vec3f {
 	    z: self.z * s
 	}
     }
+
+    pub fn angle(self, o:&Vec3f) -> f32 {
+	// theta = arccos((a dot b) / (|a| |b|))
+	let num = self.dot(o);
+	let denom = self.len() * o.len();
+
+	if denom == 0.0 {
+	    panic!("0 length vector in angle");
+	}
+
+	let ratio = num / denom;
+	ratio.acos()
+    }
 }
 
 impl Add for Vec3f {
@@ -161,7 +174,11 @@ pub struct Ray {
 }
 
 pub fn degrees_to_radians(d: f32) -> f32 {
-   d * std::f32::consts::PI / 180.0 
+    d * std::f32::consts::PI / 180.0 
+}
+
+pub fn radians_to_degrees(r: f32) -> f32 {
+    r * 180.0 / std::f32::consts::PI
 }
 
 pub fn map<T>(v: f32,

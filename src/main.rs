@@ -107,7 +107,8 @@ fn main() {
     let mut sb = scene::SceneBuilder::new(cam, sky_box);
     scene::test_scenes::add_checkerboard_floor(&mut sb);
     //scene::test_scenes::add_three_dir_lights(&mut sb);
-    scene::test_scenes::add_point_light(&mut sb);
+    //scene::test_scenes::add_point_light(&mut sb);
+    scene::test_scenes::add_cone_light(&mut sb);
     scene::test_scenes::add_ring_of_spheres_objects(&mut sb);
     //scene::test_scenes::add_crayola_crayon_spheres_objects(&mut sb);
     

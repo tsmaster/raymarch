@@ -3,7 +3,6 @@
 // hardcoded test scenes
 
 // TODO clean this up
-use crate::SDF;
 use crate::bdg_color::ColorRgbF;
 use crate::geom::capsule::Capsule;
 use crate::geom::cubebox::CubeBox;
@@ -16,6 +15,7 @@ use crate::geom::sphere::Sphere;
 use crate::geom::torus::Torus;
 use crate::geom::translate::OpTranslate;
 use crate::lights::ambient::AmbientLight;
+use crate::lights::cone::ConeLight;
 use crate::lights::directional::DirectionalLight;
 use crate::lights::point::{PointLight, FalloffConstant};
 use crate::math::Vec3f;
@@ -24,7 +24,6 @@ use crate::scene;
 use crate::shaders::checker::CheckerShader;
 use crate::shaders::diffuse::DiffuseShader;
 use crate::shaders::distance_fade::DistanceFadeShader;
-use crate::shaders::shader::Shader;
 use crate::shaders::specular::SpecularShader;
 
 pub fn add_checkerboard_floor(sb: &mut scene::SceneBuilder) {
@@ -99,6 +98,28 @@ pub fn add_point_light(sb: &mut scene::SceneBuilder) {
 	}
     }));
 }
+
+
+
+pub fn add_cone_light(sb: &mut scene::SceneBuilder) {
+    sb.add_light(Box::new(ConeLight {
+	posn: Vec3f {
+	    x: 2.0,
+	    y: 0.0,
+	    z: 10.0
+	},
+	direction: Vec3f {
+	    x: -2.0,
+	    y: 0.0,
+	    z: -10.0
+	},
+	color: ColorRgbF::CRAYOLA_ALMOND,
+	intensity: 1.0,
+	intensity_angle_full_degrees: 20.0,
+	intensity_angle_zero_degrees: 45.0,
+    }));
+}
+
 
 
 pub fn add_single_sphere_object(sb: &mut scene::SceneBuilder) {
