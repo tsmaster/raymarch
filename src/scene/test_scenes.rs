@@ -26,6 +26,8 @@ use crate::shaders::checker::CheckerShader;
 use crate::shaders::diffuse::DiffuseShader;
 use crate::shaders::distance_fade::DistanceFadeShader;
 use crate::shaders::graphpaper::GraphPaperXYShader;
+use crate::shaders::noise::{NoisePerlinShader,
+			    NoiseMarbleYShader};
 use crate::shaders::specular::SpecularShader;
 
 pub fn add_checkerboard_floor(sb: &mut scene::SceneBuilder) {
@@ -57,6 +59,58 @@ pub fn add_checkerboard_floor(sb: &mut scene::SceneBuilder) {
 			  color: ColorRgbF::CRAYOLA_BLACK}),
 		  }));
 }
+
+
+pub fn add_marble_checkerboard_floor(sb: &mut scene::SceneBuilder) {
+    let p = ZPlusPlane {
+	z: 0.0
+    };
+
+    sb.add_object(Box::new(p),
+		  Box::new(DistanceFadeShader {
+		      near_dist: 50.0,
+		      far_dist: 250.0,
+		      near_shader: Box::new(CheckerShader{
+			  x_width: 6.0,
+			  y_width: 6.0,
+			  odd_shader: Box::new(NoiseMarbleYShader{
+			      noise_fn: noise::Perlin::new(),
+			      scale: 2.0,
+			      offset: Vec3f {
+				  x: 1.2,
+				  y: 3.5,
+				  z: 8.12,
+			      },
+			      depth: 7,
+			      shader_0: Box::new(DiffuseShader {
+				  color: ColorRgbF::GRAY_70,
+			      }),
+			      shader_1: Box::new(DiffuseShader {
+				  color: ColorRgbF::WHITE,
+			      })
+			  }),
+			  even_shader: Box::new(NoiseMarbleYShader{
+			      noise_fn: noise::Perlin::new(),
+			      scale: 2.0,
+			      offset: Vec3f {
+				  x: 1.2,
+				  y: 3.5,
+				  z: 8.12,
+			      },
+			      depth: 7,
+			      shader_0: Box::new(DiffuseShader {
+				  color: ColorRgbF::CRAYOLA_BLACK,
+			      }),
+			      shader_1: Box::new(DiffuseShader {
+				  color: ColorRgbF::GRAY_30,
+			      })
+			  }),			  
+		      }),
+		      far_shader: Box::new(DiffuseShader {
+			  color: ColorRgbF::CRAYOLA_BLACK}),
+		  }));
+}
+
 
 
 pub fn add_graphpaper_floor(sb: &mut scene::SceneBuilder) {
@@ -111,6 +165,68 @@ pub fn add_graphpaper_5_floor(sb: &mut scene::SceneBuilder) {
 			  line_shader: Box::new(DiffuseShader {
 			      color: ColorRgbF::CRAYOLA_BLACK,
 			  }),
+		      }),
+		      far_shader: Box::new(DiffuseShader {
+			  color: ColorRgbF::CRAYOLA_GRAY}),
+		  }));
+}
+
+
+pub fn add_turbulent_floor(sb: &mut scene::SceneBuilder) {
+    let p = ZPlusPlane {
+	z: 0.0
+    };
+
+    sb.add_object(Box::new(p),
+		  Box::new(DistanceFadeShader {
+		      near_dist: 50.0,
+		      far_dist: 250.0,
+		      near_shader: Box::new(NoisePerlinShader{
+			  noise_fn: noise::Perlin::new(),
+			  scale: 2.0,
+			  offset: Vec3f {
+			      x: 1.5,
+			      y: 2.3,
+			      z: 3.9,
+			  },
+			  depth: 7,
+			  shader_0: Box::new(DiffuseShader {
+			      color: ColorRgbF::CRAYOLA_BLACK,
+			  }),
+			  shader_1: Box::new(DiffuseShader {
+			      color: ColorRgbF::CRAYOLA_WHITE,
+			  })
+		      }),
+		      far_shader: Box::new(DiffuseShader {
+			  color: ColorRgbF::CRAYOLA_GRAY}),
+		  }));
+}
+
+
+pub fn add_marble_floor(sb: &mut scene::SceneBuilder) {
+    let p = ZPlusPlane {
+	z: 0.0
+    };
+
+    sb.add_object(Box::new(p),
+		  Box::new(DistanceFadeShader {
+		      near_dist: 50.0,
+		      far_dist: 250.0,
+		      near_shader: Box::new(NoiseMarbleYShader{
+			  noise_fn: noise::Perlin::new(),
+			  scale: 2.0,
+			  offset: Vec3f {
+			      x: 1.2,
+			      y: 3.5,
+			      z: 8.12,
+			  },
+			  depth: 7,
+			  shader_0: Box::new(DiffuseShader {
+			      color: ColorRgbF::GRAY_50,
+			  }),
+			  shader_1: Box::new(DiffuseShader {
+			      color: ColorRgbF::CRAYOLA_ALMOND,
+			  })
 		      }),
 		      far_shader: Box::new(DiffuseShader {
 			  color: ColorRgbF::CRAYOLA_GRAY}),
@@ -205,6 +321,45 @@ pub fn add_single_sphere_object(sb: &mut scene::SceneBuilder) {
 		      specular_power: 6.0
 		  }));
 }
+
+
+pub fn add_single_marble_sphere_object(sb: &mut scene::SceneBuilder) {
+    let sphere_posn = Vec3f {
+	x: 0.0,
+	y: 0.0,
+	z: 3.0
+    };
+    let white_sphere = Sphere {
+	center: sphere_posn,
+	r:2.0
+    };
+    sb.add_object(Box::new(white_sphere),
+		  Box::new(NoiseMarbleYShader{
+		      noise_fn: noise::Perlin::new(),
+		      scale: 2.0,
+		      offset: Vec3f {
+			  x: 3.1,
+			  y: 4.1,
+			  z: 5.9,
+		      },
+		      depth: 7,
+		      shader_0: Box::new(DiffuseShader {
+			  color: ColorRgbF::CRAYOLA_BLACK,
+		      }),
+		      shader_1: Box::new(DiffuseShader {
+			  color: ColorRgbF::CRAYOLA_WHITE,
+		      })
+		  }),
+		  /*
+		  Box::new(SpecularShader {
+		      ambient_color: ColorRgbF::CRAYOLA_WHITE,
+		      diffuse_color: ColorRgbF::CRAYOLA_WHITE,
+		      specular_color: ColorRgbF::CRAYOLA_WHITE,
+		      specular_power: 6.0
+    })*/
+    );
+}
+
 
 
 pub fn add_ring_of_spheres_objects(sb: &mut scene::SceneBuilder) {

@@ -21,8 +21,18 @@ impl ColorRgbF {
     pub const CYAN: ColorRgbF = ColorRgbF { r: 0.0, g: 255.0, b: 255.0 };
     pub const MAGENTA: ColorRgbF = ColorRgbF { r: 255.0, g: 0.0, b: 255.0 };
     pub const BLACK: ColorRgbF = ColorRgbF { r: 0.0, g: 0.0, b: 0.0 };
-    pub const GRAY_50: ColorRgbF = ColorRgbF { r: 128.0, g: 128.0, b: 128.0 };
+    pub const GRAY_10: ColorRgbF = ColorRgbF { r: 25.5, g: 25.5, b: 25.5 };
+    pub const GRAY_20: ColorRgbF = ColorRgbF { r: 51.0, g: 51.0, b: 51.0 };
+    pub const GRAY_30: ColorRgbF = ColorRgbF { r: 76.5, g: 76.5, b: 76.5 };
+    pub const GRAY_40: ColorRgbF = ColorRgbF { r: 102.0, g: 102.0, b: 102.0 };
+    pub const GRAY_50: ColorRgbF = ColorRgbF { r: 127.5, g: 127.5, b: 127.5 };
+    pub const GRAY_60: ColorRgbF = ColorRgbF { r: 153.0, g: 153.0, b: 153.0 };
+    pub const GRAY_70: ColorRgbF = ColorRgbF { r: 178.5, g: 178.5, b: 178.5 };
+    pub const GRAY_80: ColorRgbF = ColorRgbF { r: 204.0, g: 204.0, b: 204.0 };
+    pub const GRAY_90: ColorRgbF = ColorRgbF { r: 229.5, g: 229.5, b: 229.5 };
     pub const WHITE: ColorRgbF = ColorRgbF { r: 255.0, g: 255.0, b: 255.0 };
+
+    pub const ZERO: ColorRgbF = ColorRgbF { r: 0.0, g: 0.0, b: 0.0 };
 }
 
 impl Add for ColorRgbF {

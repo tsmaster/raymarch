@@ -25,13 +25,15 @@ and have fun making computer graphics.
   - colors
 - documentation
 - materials
-  - plastic
+  - matte (see RMC p 334)
+  
+  - plastic (see RMC p 336)
     - kd
     - ks
     - ka
     - specular power
     - see https://en.wikipedia.org/wiki/Phong_reflection_model
-  - metal (reflection)
+  - metal (reflection) (see RMC p 336)
     - roughness
   - wood (requires noise) 
     - see RMC p350
@@ -64,6 +66,23 @@ and have fun making computer graphics.
   - trees
 - support RGBA output
   - useful when rendering without a sky
+- fancy selector shaders
+  - select based on 3 x y z hat vectors dotted with normal
+  - select based on 6 x y z hat vectors dotted with normal
+  - select based on 1 vector (e.g. grass on top, dirt elsewhere)
+  - select based on SDF; positive is mat1, negative is mat2
+    - allows me to shade the inside of dice pips based on using similar "masks" to the carving out geom
+- geometry selector
+  - e.g. LOD based on distance
+- repeat modifiers
+  - xyz
+  - xy
+- randomized offset based on position
+  - for e.g. forest
+- marching cubes?
+- supersampling
+  - grid based
+  - randomized
 
 ## Done
 
@@ -95,6 +114,7 @@ and have fun making computer graphics.
   - using ray marching proximity technique
 - materials  
   - checkerboard (see RMC p345)
+  - marble (requires noise) (see RMC p 354)
 - sdf transformations
   - translation
 - cmdline arg for resolution
@@ -117,6 +137,9 @@ and have fun making computer graphics.
   - SDF of a box: https://youtu.be/62-pRVZuS5c
 - RenderMan Companion: https://archive.org/details/rendermancompani00upst/mode/2up
 - Markdown cheat sheet: https://www.markdownguide.org/cheat-sheet/
+- Ray Tracing in One Weekend: https://raytracing.github.io/books/RayTracingInOneWeekend.html
+- Ray Tracing: The Next Week: https://raytracing.github.io/books/RayTracingTheNextWeek.html
+- Ray Tracing: The Rest of Your Life: https://raytracing.github.io/books/RayTracingTheRestOfYourLife.html
 
 
 ## Dev Log
