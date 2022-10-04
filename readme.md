@@ -83,6 +83,11 @@ and have fun making computer graphics.
 - supersampling
   - grid based
   - randomized
+- Bounding Volume Hierarchy (BVH)
+  - automatically split mesh into
+    - roughly equal number of triangles
+    - roughly equal size bounding volumes
+ 
 
 ## Done
 
