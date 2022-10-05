@@ -85,7 +85,10 @@ and have fun making computer graphics.
   - randomized
 - fractal landscape https://iquilezles.org/articles/fbmsdf/
   - https://www.shadertoy.com/view/Ws3XWl
-  
+- Bounding Volume Hierarchy (BVH)
+  - automatically split mesh into
+    - roughly equal number of triangles
+    - roughly equal size bounding volumes
 
 ## Done
 
