@@ -2,6 +2,8 @@
 //
 // hardcoded test scenes
 
+use std::sync::Arc;
+
 // TODO clean this up
 use crate::bdg_color::ColorRgbF;
 use crate::geom::capsule::Capsule;
@@ -13,6 +15,7 @@ use crate::geom::cylinder::CylinderInfiniteZ;
 use crate::geom::plane::ZPlusPlane;
 use crate::geom::sphere::Sphere;
 use crate::geom::torus::Torus;
+use crate::geom::triangle_mesh::TriangleMesh;
 use crate::geom::translate::OpTranslate;
 use crate::lights::ambient::AmbientLight;
 use crate::lights::cone::ConeLight;
@@ -673,3 +676,259 @@ pub fn add_disc_with_holes_objects(sb: &mut scene::SceneBuilder) {
 	    color:ColorRgbF::CRAYOLA_YELLOW}));
 
 }
+
+
+
+pub fn add_car_object(sb: &mut scene::SceneBuilder) {
+    let scenes = easy_gltf::load("tools/Kenney/CarKit/Models/GLTF/raceFuture.glb").unwrap();
+
+    println!("num scenes: {}", scenes.len());
+    for scene in scenes {
+	walk_scene(&scene, sb);
+    }
+
+    //walk_scene(&scenes[1], sb);
+}
+
+fn walk_scene(scene: &easy_gltf::Scene, sb: &mut scene::SceneBuilder) {
+    println!("num models {}", &scene.models.len());
+
+    for model in &scene.models {
+	walk_model(&model, sb);
+    }
+    
+    //walk_model(&scene.models[1], sb);
+
+    for _camera in &scene.cameras {
+	println!("camera");
+    }
+
+    for _light in &scene.lights {
+	println!("light");
+    }
+}
+
+fn walk_model(model: &easy_gltf::model::Model, sb: &mut scene::SceneBuilder) {
+    println!("---begin model---");
+
+    let mat = visit_material(model.material());
+
+    let mut trimesh = TriangleMesh {
+	triangles: vec!(),
+    };
+    
+    println!("mode: {:?}", model.mode());
+    println!("vert count {}", model.vertices().len());
+    match model.indices() {
+	Some(indices) => { println!("index count {}", indices.len()); }
+	None => {}
+    };
+    match model.mode() {
+	easy_gltf::model::Mode::Triangles | easy_gltf::model::Mode::TriangleFan | easy_gltf::model::Mode::TriangleStrip => {
+	    match model.triangles() {
+		Ok(triangles) => {
+		    println!("triangle count {}", triangles.len());
+		    insert_triangles(&triangles, &mut trimesh);
+		},
+		Err(badmode) => {println!("bad mode: {:?}", badmode);}
+	    };
+	},
+	_ => {}
+    };
+    //println!("model has normals? {}", if model.has_normals() { "true" } else { "false"});
+    //println!("model has tangents? {}", if model.has_tangents() { "true" } else { "false"});
+    //println!("model has tex coords? {}", if model.has_tex_coords() { "true" } else { "false"});
+    //println!("---end model---");
+
+    
+    sb.add_object(Box::new(trimesh),
+		  Box::new(mat));
+}
+
+fn visit_material(mat: Arc<easy_gltf::model::Material>) -> impl crate::shaders::shader::Shader {
+    println!("----- begin Material -----");
+
+    println!("------PBR begin------");
+    println!("base color factor {:?}", mat.pbr.base_color_factor);
+
+    DiffuseShader {
+	color: ColorRgbF{
+	    r: mat.pbr.base_color_factor[0] * 255.0,
+	    g: mat.pbr.base_color_factor[1] * 255.0,
+	    b: mat.pbr.base_color_factor[2] * 255.0
+	}
+    }
+	
+    
+    /*
+    match &mat.pbr.base_color_texture {
+	Some(rgba) => { println!("has base color texture");},
+	None => {}
+    };
+    
+    match &mat.pbr.metallic_texture {
+	Some(gray) => { println!("has metallic texture");},
+	None => {}
+    };
+    
+    println!("metallic_factor: {:?}", mat.pbr.metallic_factor);
+    
+    match &mat.pbr.roughness_texture {
+	Some(gray) => { println!("has roughness texture");},
+	None => {}
+    };
+    
+    println!("roughness_factor: {:?}", mat.pbr.roughness_factor);
+    
+    println!("------PBR end------");
+
+    match &mat.normal {
+	Some(normal_map) => { println!("has normal map");},
+	None => {}
+    }
+
+    match &mat.occlusion {
+	Some(normal_map) => { println!("has occlusion map");},
+	None => {}
+    }
+
+    println!("------EM begin------");
+    match &mat.emissive.texture {
+	Some(normal_map) => { println!("has occlusion map");},
+	None => {}
+    }
+
+    println!("emissive factor {:?}", &mat.emissive.factor);
+    
+    println!("------EM end------");
+*/
+    //println!("----- end Material -----");
+}
+
+fn insert_triangles(triangles: &Vec<easy_gltf::model::Triangle>, tri_mesh: &mut TriangleMesh) {
+    for t in triangles {
+	println!("triangle");
+	for vi in 0..3 {
+	    //println!("  vert {}", vi);
+	    visit_vertex(&t[vi]);
+	}
+
+	let dbg_scale = 8.0;
+	
+	let v0 = make_vec_from_vertex(&t[0]) * dbg_scale;
+	let v1 = make_vec_from_vertex(&t[1]) * dbg_scale;
+	let v2 = make_vec_from_vertex(&t[2]) * dbg_scale;
+
+	tri_mesh.triangles.push([v0, v1, v2]);
+    }
+}
+
+fn visit_vertex(vert: &easy_gltf::model::Vertex) {
+
+    println!("pos {:?}", vert.position);
+/*    println!("norm {:?}", vert.normal);
+    //println!("tangent {:?}", vert.tangent);
+    println!("tex_coords {:?}", vert.tex_coords);*/
+}
+
+fn make_vec_from_vertex(vert: &easy_gltf::model::Vertex) -> Vec3f {
+    Vec3f {
+	x: vert.position[0],
+	y: vert.position[2],
+	z: vert.position[1]
+    }
+}
+
+pub fn add_cube_object(sb: &mut scene::SceneBuilder) {
+    let mut trimesh = TriangleMesh {
+	triangles: vec!(),
+    };
+
+
+    let v0 = Vec3f {
+	x: 1.0,
+	y: 1.0,
+	z: 0.0
+    };
+
+    let v1 = Vec3f {
+	x: 1.0,
+	y: -1.0,
+	z: 0.0,
+    };
+
+    let v2 = Vec3f {
+	x: 1.0,
+	y: -1.0,
+	z: 2.0
+    };
+
+    let v3 = Vec3f {
+	x: 1.0,
+	y: 1.0,
+	z: 2.0
+    };
+
+    let v4 = Vec3f {
+	x: -1.0,
+	y: 1.0,
+	z: 0.0
+    };
+
+    let v5 = Vec3f {
+	x: -1.0,
+	y: -1.0,
+	z: 0.0,
+    };
+
+    let v6 = Vec3f {
+	x: -1.0,
+	y: -1.0,
+	z: 2.0
+    };
+
+    let v7 = Vec3f {
+	x: -1.0,
+	y: 1.0,
+	z: 2.0
+    };
+    
+    trimesh.triangles.push([v0, v1, v2]);
+    trimesh.triangles.push([v0, v2, v3]);
+
+    trimesh.triangles.push([v4, v5, v6]);
+    trimesh.triangles.push([v4, v6, v7]);
+
+    trimesh.triangles.push([v1, v5, v6]);
+    trimesh.triangles.push([v1, v6, v2]);
+
+    trimesh.triangles.push([v0, v4, v7]);
+    trimesh.triangles.push([v0, v7, v3]);
+
+    trimesh.triangles.push([v3, v2, v6]);
+    trimesh.triangles.push([v3, v6, v7]);
+    
+
+    sb.add_object(Box::new(trimesh),
+		  Box::new(DiffuseShader {
+		      color: ColorRgbF::CRAYOLA_RED}));
+}
+
+
+pub fn add_cube_gltf_object(sb: &mut scene::SceneBuilder) {
+    let scenes = easy_gltf::load("tools/cube.gltf").unwrap();
+
+    for scene in scenes {
+	walk_scene(&scene, sb);
+    }
+}
+
+
+pub fn add_cube_glv_object(sb: &mut scene::SceneBuilder) {
+    let scenes = easy_gltf::load("tools/cube.glb").unwrap();
+
+    for scene in scenes {
+	walk_scene(&scene, sb);
+    }
+}
+

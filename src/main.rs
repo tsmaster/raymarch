@@ -157,9 +157,9 @@ fn main() {
 
     let mut sb = scene::SceneBuilder::new(cam, sky_box);
     //scene::test_scenes::add_checkerboard_floor(&mut sb);
-    scene::test_scenes::add_marble_checkerboard_floor(&mut sb);
+    //scene::test_scenes::add_marble_checkerboard_floor(&mut sb);
     //scene::test_scenes::add_graphpaper_floor(&mut sb);
-    //scene::test_scenes::add_graphpaper_5_floor(&mut sb);
+    scene::test_scenes::add_graphpaper_5_floor(&mut sb);
     //scene::test_scenes::add_turbulent_floor(&mut sb);
     //scene::test_scenes::add_marble_floor(&mut sb);
     scene::test_scenes::add_three_dir_lights(&mut sb);
@@ -167,9 +167,13 @@ fn main() {
     //scene::test_scenes::add_cone_light(&mut sb);
     //scene::test_scenes::add_ring_of_spheres_objects(&mut sb);
     //scene::test_scenes::add_single_sphere_object(&mut sb);
-    scene::test_scenes::add_single_marble_sphere_object(&mut sb);
+    //scene::test_scenes::add_single_marble_sphere_object(&mut sb);
     //scene::test_scenes::add_crayola_crayon_spheres_objects(&mut sb);
     //scene::test_scenes::add_disc_with_holes_objects(&mut sb);
+    scene::test_scenes::add_car_object(&mut sb);
+    //scene::test_scenes::add_cube_object(&mut sb);
+    //scene::test_scenes::add_cube_gltf_object(&mut sb);
+    //scene::test_scenes::add_cube_glb_object(&mut sb);
     
     let scene = scene::build_scene(sb);
 

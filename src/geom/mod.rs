@@ -6,5 +6,6 @@ pub mod cylinder;
 pub mod plane;
 pub mod sphere;
 pub mod torus;
+pub mod triangle_mesh;
 
 pub mod translate;

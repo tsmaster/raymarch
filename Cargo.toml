@@ -9,6 +9,7 @@ edition = "2021"
 clap = { version = "3.2.22", features = ["derive"]}
 crossbeam = "0.8"
 crossbeam-channel = "0.5.6"
+easy-gltf = "0.1.5"
 image = "0.24.3"
 noise = "0.7.0"
 num_cpus = "1.0"

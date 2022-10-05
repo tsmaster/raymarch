@@ -11,9 +11,10 @@ and have fun making computer graphics.
   - capped cone
   - teapot?
     - bezier patch
+    - http://www.holmes3d.net/graphics/teapot/
 - boolean composition
-  - smooth addition
-  - rounded corners
+  - smooth addition ("Smooth Union, Subtraction and Intersection - bound, bound, bound")
+  - rounded corners https://iquilezles.org/articles/distfunctions/ ("Rounding - exact")
 - transformations
   - scale(?)
   - rotation
@@ -26,7 +27,6 @@ and have fun making computer graphics.
 - documentation
 - materials
   - matte (see RMC p 334)
-  
   - plastic (see RMC p 336)
     - kd
     - ks
@@ -83,6 +83,9 @@ and have fun making computer graphics.
 - supersampling
   - grid based
   - randomized
+- fractal landscape https://iquilezles.org/articles/fbmsdf/
+  - https://www.shadertoy.com/view/Ws3XWl
+  
 
 ## Done
 
@@ -322,7 +325,6 @@ as we enter October.
 ![spheres_2022_10_01b](https://user-images.githubusercontent.com/72338/193436243-d45b7c9b-54fe-4526-9a6a-982d28e5ca37.png)
 
 
-
 ### October 2, 2022
 
 I added Constructive Solid Geometry (CSG) boolean operations, so now I
@@ -340,4 +342,91 @@ shader:
 
 The super thin lines on the graph paper lead me to want to do
 randomized supersampling to reduce some of the jaggies.
+
+
+### October 5, 2022
+
+I've been working on a GLTF model file loader. What I have so far uses
+the easy-gltf crate to create a number of triangle "meshes" - I
+hesitate to even call them that, because there's no real structure,
+just a list of triangles, no vertices shared, no hint of what's
+where. I also retrieve the base color for the associated material,
+which is sufficient for the following render:
+
+
+
+I think that looks cool, but there are several pieces that remain:
+
+ - _interpolated normals_ : one thing that makes this look like the
+   flat shaded wonderland of Dire Straits' "Money for Nothing" video
+   is the sharp polygon edges along the wheel fenders. Side note: I
+   wonder if there are data files approximating the 3d characters from
+   that video. The GLTF that I have contains vertex normals, so I
+   should be able to interpolate those and provide smoother looking
+   shading, at least, even if the polygons themselves remain faceted.
+
+ - _physically based materials_ : it's a car, it's supposed to be
+   shiny, and indeed, the easy-gltf material data talks about metallic
+   roughness, which means I need to dig into what the implicit model
+   is that I should be implementing.
+
+ - _oof, performance_ : the elephant in the roadster is that a 240x240
+   debug thumbnail took 178 seconds and change, which is maybe not so
+   bad if one wants to be charitable and say that there's thousands of
+   unstructured triangles, all just anywhere. But I have no patience
+   for that; I demand something like a million pixels in a few
+   seconds. (Side note: there's another gltf crate, just called
+   "gltf", which I tried using, and I noticed two things - I couldn't
+   find the base material color, and the rustc compile times were
+   suddenly like 25 seconds, up from a couple of seconds. So,
+   easy-gltf has fixed both.) Two avenues for improving performance
+   come to mind:
+
+    - _precomputing triangle values_: Inigo Quilez is an amazing
+      resource in SDF math. On one of his (many, excellent) pages, he
+      talks about math behind finding the distance to a triangle. I
+      translated his code directly, without initially understanding
+      it, and I attempted to debug my results. It turns out I had
+      ported his code correctly, but I was rendering the body of the
+      car rotated (y-up) and penetrating the floor, so I didn't
+      recognize what I was looking at. I was expecting to see a single
+      tire, but instead, got the rear of the body. Along the way, I
+      saw Inigo's mention that a lot of the values in the SDF
+      calculation could be computed once for the entire triangle,
+      which should make things a little faster. Also, there's a square
+      root, which maybe not as bad in 2022 as back in 1995, but he
+      points out that the square root can be deferred if you're doing
+      a lot of triangle distances, and done once at the end, which is
+      exactly my case.
+
+    - _bounding volume hierarchy_ : This one, I think, is going to be
+      substantially more useful. As I've indicated above, I'm
+      uncomfortable with the unstructured soup of triangles, and would
+      prefer to put nearby triangles together. I wrote "connected
+      triangles" at first, because you'd think that'd help, but a)
+      maybe not so much, and b) I'm not getting any sort of connected
+      mesh out of easy-gltf, and I don't want to stitch triangles
+      together. Instead, I can group triangles into a tree of bounding
+      volumes. A bounding box for the entire mesh would be an easy
+      starting point, though it will require a little more complexity
+      to my ray traversal - checking the bounding box before checking
+      the contained triangle distances, comparing that bound to the
+      running total to discard the contained triangles in one
+      batch. When a single cull works, it will save me thousands of
+      triangles' worth of calculation, which is good, but I'm afraid
+      that I'll get into the triangles more than I want for a single
+      bounding volume to suffice. So, I will make a tree, splitting a
+      mesh up recursively, probably doing a binary split along the
+      long dimension, continuing until I get down to a target volume
+      (e.g. 1 unit cube) or down to a target number of triangles
+      (maybe 100?). And, while I start with bounding boxes, I'm
+      reminded of a diagram (in Newman & Sproull?) illustrating
+      bounding volumes on a wagon wheel, which shows boxes, spheres,
+      and cylinders, with varying degrees of tightness. I'm fortunate
+      in that my car model has wheels, which prompts me to try boxes,
+      spheres, and cylinders for pieces of my data, and keep the
+      volume at each node of my tree that has the least volume, but
+      contains all of my data. I anticipate that this should not be
+      difficult, and hopefully, should give good performance results.
+
 

@@ -57,6 +57,10 @@ impl Vec3f {
 	self.x * o.x + self.y * o.y + self.z * o.z
     }
 
+    pub fn dot2(self) -> f32 {
+	self.x * self.x + self.y * self.y + self.z * self.z
+    }
+
     pub fn len(self) -> f32 {
 	f32::sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
     }
@@ -241,4 +245,14 @@ pub fn clamp(v: f32, min: f32, max: f32) -> f32 {
     }
 
     v
+}
+
+pub fn sign(v: f32) -> f32 {
+    if v == 0.0 {
+	0.0
+    } else if v < 0.0 {
+	-1.0
+    } else {
+	1.0
+    }
 }

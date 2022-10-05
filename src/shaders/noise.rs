@@ -86,7 +86,7 @@ fn turb<N : NoiseFn<[f64; 3]>>(point: &Vec3f,
     let mut temp_point = *point;
     let mut weight = 1.0;
     
-    for i in 0..depth {
+    for _i in 0..depth {
 	accum += weight * noise.get([(temp_point.x) as f64,
 				     (temp_point.y) as f64,
 				     (temp_point.z) as f64]) as f32;
