@@ -25,6 +25,16 @@ pub fn shoot_ray_at_objects(r: &Ray,
 
 	for obj_idx in 0 .. obj_list.len() {
 	    let (obj, _) = &obj_list[obj_idx];
+
+	    let obj_bound = obj.bound(&cur_pos);
+	    match (obj_bound) {
+		Some(bound_dist) => {
+		    if (bound_dist > best_dist) {
+			continue;
+		    }
+		},
+		None => {}
+	    }
 	    
 	    let obj_dist = obj.dist(&cur_pos);
 	    if obj_dist < best_dist {

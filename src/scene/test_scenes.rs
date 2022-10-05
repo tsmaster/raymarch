@@ -712,10 +712,13 @@ fn walk_model(model: &easy_gltf::model::Model, sb: &mut scene::SceneBuilder) {
     println!("---begin model---");
 
     let mat = visit_material(model.material());
-
+/*
     let mut trimesh = TriangleMesh {
 	triangles: vec!(),
-    };
+};*/
+
+
+    let mut trimesh = TriangleMesh::new();    
     
     println!("mode: {:?}", model.mode());
     println!("vert count {}", model.vertices().len());
@@ -740,6 +743,7 @@ fn walk_model(model: &easy_gltf::model::Model, sb: &mut scene::SceneBuilder) {
     //println!("model has tex coords? {}", if model.has_tex_coords() { "true" } else { "false"});
     //println!("---end model---");
 
+    trimesh.bake();
     
     sb.add_object(Box::new(trimesh),
 		  Box::new(mat));
@@ -840,10 +844,12 @@ fn make_vec_from_vertex(vert: &easy_gltf::model::Vertex) -> Vec3f {
 }
 
 pub fn add_cube_object(sb: &mut scene::SceneBuilder) {
+    /*
     let mut trimesh = TriangleMesh {
 	triangles: vec!(),
-    };
+};*/
 
+    let mut trimesh = TriangleMesh::new();
 
     let v0 = Vec3f {
 	x: 1.0,
@@ -907,7 +913,8 @@ pub fn add_cube_object(sb: &mut scene::SceneBuilder) {
 
     trimesh.triangles.push([v3, v2, v6]);
     trimesh.triangles.push([v3, v6, v7]);
-    
+
+    trimesh.bake();
 
     sb.add_object(Box::new(trimesh),
 		  Box::new(DiffuseShader {
