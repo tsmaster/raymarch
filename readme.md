@@ -356,6 +356,7 @@ just a list of triangles, no vertices shared, no hint of what's
 where. I also retrieve the base color for the associated material,
 which is sufficient for the following render:
 
+![car_2022_10_05](https://user-images.githubusercontent.com/72338/194094458-4d9fa4fa-09ee-45c8-aade-6071216cafe3.png)
 
 
 I think that looks cool, but there are several pieces that remain:
