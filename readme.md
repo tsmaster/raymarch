@@ -502,6 +502,8 @@ the context of cone tracing, orthographic views don't have beams that
 expand out like cones through each pixel, the beams are uniform
 cylinders extending to infinity. Not a huge deal for ray marching:
 
+![car_2022_10_09](https://user-images.githubusercontent.com/72338/194776553-11db8776-c3d4-49a9-8c10-37a19b1b2862.png)
+
 
 But if/when I do the "cone marching", the cones will be defined by a
 getWidthAtDistance(d) method, which will increase linearly with
