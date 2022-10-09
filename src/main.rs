@@ -1,7 +1,7 @@
 extern crate num_cpus;
 
 mod bdg_color;
-mod camera;
+mod cameras;
 mod cast;
 mod crayola_color;
 mod geom;
@@ -26,6 +26,7 @@ use std::time::Instant;
 use std::str::FromStr;
 
 use bdg_color::{ColorRgbF, ColorRgb8};
+use crate::cameras::camera::Camera;
 use crate::cast::shoot_ray_at_objects;
 use math::{Vec3f, Ray};
 use sdf::SDF;
@@ -58,7 +59,7 @@ fn parse_res(s: &str) -> Result<(usize, usize), String> {
 		s
 	    ))
 	}
-    }		    
+    }
 }
 
 fn split_res<T:FromStr>(s: &str, separator: char) -> Option<(T, T)> {
@@ -73,11 +74,11 @@ fn split_res<T:FromStr>(s: &str, separator: char) -> Option<(T, T)> {
 	}
     }
 }
-	
+
 
 fn main() {
     let args = Args::parse();
-    
+
     let start_time = Instant::now();
 
     let num_threads = match args.num_threads {
@@ -92,13 +93,13 @@ fn main() {
     };
 
     println!("using {} threads", num_threads);
-    
+
     let camera_posn = if args.animate {
 	println!("animated");
 	let anim_duration = 20.0; // seconds
 	let fps = 20.0; //frames per second
 	let total_frames = (anim_duration * fps) as u32;
-	
+
 	let anim_complete_frac = (args.frame_num as f32) / (total_frames as f32);
 
 
@@ -144,18 +145,36 @@ fn main() {
 	z: 1.0
     };
 
-    let cam = camera::PerspectiveCamera{
+    /*
+    let cam = cameras::perspective::PerspectiveCamera{
 	posn: camera_posn,
 	look_at: look_posn,
 	up: Vec3f::UP,
 	fov: 60.0,
+};*/
+
+    let cam = cameras::orthographic::OrthoCamera {
+	posn: //camera_posn,
+	Vec3f {
+	    x: 20.0,
+	    y: -20.0,
+	    z: 20.0
+	},
+	look_at: //look_posn,
+	Vec3f {
+	    x: 0.0,
+	    y: 2.0,
+	    z: 2.0
+	},
+	world_up: Vec3f::UP,
+	world_width: 24.0
     };
 
     let sky_box = sky::SkySphere {
 
     };
 
-    let mut sb = scene::SceneBuilder::new(cam, sky_box);
+    let mut sb = scene::SceneBuilder::new(Box::new(cam), sky_box);
     //scene::test_scenes::add_checkerboard_floor(&mut sb);
     //scene::test_scenes::add_marble_checkerboard_floor(&mut sb);
     //scene::test_scenes::add_graphpaper_floor(&mut sb);
@@ -174,10 +193,10 @@ fn main() {
     //scene::test_scenes::add_cube_object(&mut sb);
     //scene::test_scenes::add_cube_gltf_object(&mut sb);
     //scene::test_scenes::add_cube_glb_object(&mut sb);
-    
+
     let scene = scene::build_scene(sb);
 
-    
+
     let bounds = match args.resolution {
 	None => (1600, 900),
 	Some(r) => r
@@ -198,7 +217,7 @@ fn main() {
 	crossbeam::scope(|spawner| {
 	    // bounded multiple producer channel
 	    let (tx, rx) = bounded(0);
-	    
+
 	    for (_i, rc) in ray_chunks.into_iter().enumerate() {
 		// we want an immutable list of objects
 		let immut_objects = &scene.objects;
@@ -209,23 +228,26 @@ fn main() {
 
 		spawner.spawn(move |_| {
 		    let mut out_data = HashMap::<(usize, usize), ColorRgb8>::new();
-		    
+
 		    //render
 		    for ((x,y),r) in rc {
+			//println!("shooting ray from {} {} {:?}", x, y, r);
+
 			let hit = shoot_ray_at_objects(r,
 						       &immut_objects,
-						       &cam.posn,
 						       1000, 10000.0);
 
 			let c = match hit {
 			    Some((idx, pos)) => {
+				//println!("hit object {} {:?}", idx, pos);
+
 				let normal = calc_normal(&immut_objects[idx].0, pos);
 				let shaded_color = immut_objects[idx].1.get_color(&pos,
 										  &normal,
 										  &cam.posn,
 										  &immut_lights,
 										  &immut_objects
-										       
+
 				);
 				shaded_color
 			    },
@@ -233,7 +255,7 @@ fn main() {
 				sky_box.shoot_ray(*r)
 			    }
 			};
-			
+
 			let c_b = c.to_rgb8();
 
 			out_data.insert((*x,*y), c_b);
@@ -263,7 +285,7 @@ fn main() {
 	Some(n) => n,
 	None => "OutImages/test_image.png".to_string()
     };
-    
+
     write_image(&out_file_name,
 		&pixels,
 		bounds).expect("error writing image file");

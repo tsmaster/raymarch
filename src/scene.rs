@@ -6,7 +6,7 @@
 pub mod test_scenes;
 
 use crate::sdf::SDF;
-use crate::camera::PerspectiveCamera;
+use crate::cameras::camera::Camera;
 use crate::lights::lightsource::LightSource;
 use crate::shaders::shader::Shader;
 use crate::sky;
@@ -16,7 +16,7 @@ pub struct Scene {
     pub lights: Vec::<Box<dyn LightSource + Sync>>,
     pub objects: Vec::<(Box<dyn SDF + Sync>,
 			Box<dyn Shader + Sync>)>,
-    pub camera: PerspectiveCamera,
+    pub camera: Box<dyn Camera>,
     pub sky_box: sky::SkySphere,
 }
 
@@ -24,12 +24,12 @@ pub struct SceneBuilder {
     pub lights: Vec::<Box<dyn LightSource + Sync>>,
     pub objects: Vec::<(Box<dyn SDF + Sync>,
 			Box<dyn Shader + Sync>)>,
-    pub camera: PerspectiveCamera,
+    pub camera: Box<dyn Camera>,
     pub sky_box: sky::SkySphere,
 }
 
 impl SceneBuilder {
-    pub fn new(camera: PerspectiveCamera,
+    pub fn new(camera: Box<dyn Camera>,
 	       sky:sky::SkySphere) -> SceneBuilder {
 	SceneBuilder {
 	    lights: vec!(),

@@ -10,16 +10,18 @@ use crate::shaders::shader::Shader;
 pub fn shoot_ray_at_objects(r: &Ray,
 			obj_list: &Vec<(Box<dyn SDF + Sync>,
 					Box<dyn Shader + Sync>)>,
-			start_point: &Vec3f,
 			num_steps: usize,
 			dist: f32) -> Option<(usize, Vec3f)> {
 
     let tolerance = 1.0e-4;
 
-    let mut cur_pos = *start_point;
+    let start_point = r.origin;
+    let mut cur_pos = start_point;
     let r_step = r.direction.normalized();
 
     for _si in 0 .. num_steps {
+	//println!("step: {} cur pos {:?}", _si, cur_pos);
+	
 	let mut best_dist = dist * 100.0;
 	let mut best_obj_idx = 0;
 
@@ -49,7 +51,7 @@ pub fn shoot_ray_at_objects(r: &Ray,
 
 	cur_pos = cur_pos + r_step.scale(best_dist);
 
-	if (cur_pos - *start_point).len() > dist {
+	if (cur_pos - start_point).len() > dist {
 	    break;
 	}	
     }

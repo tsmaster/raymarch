@@ -3,6 +3,9 @@
 
 use crate::math::{Vec3f, Ray};
 
+use crate::cameras::camera::Camera;
+
+
 #[derive(Debug, Copy, Clone)]
 pub struct PerspectiveCamera {
     pub posn: Vec3f,
@@ -24,8 +27,10 @@ impl PerspectiveCamera {
 	    fov
 	}
     }
+}
 
-    pub fn get_rays(self, width: usize, height: usize) -> Vec::<((usize, usize), Ray)> {
+impl Camera for PerspectiveCamera {
+    fn get_rays(self, width: usize, height: usize) -> Vec::<((usize, usize), Ray)> {
 	let mut out_vec = Vec::<((usize, usize), Ray)>::new();
 
 	let forward = (self.look_at - self.posn).normalized();

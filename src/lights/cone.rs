@@ -41,7 +41,6 @@ impl LightSource for ConeLight {
 	    
 	    let cast = cast::shoot_ray_at_objects(&to_light_ray,
 						  objects,
-						  &step_away,
 						  1000,
 						  10000.0);
 	    match cast {

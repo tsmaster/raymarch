@@ -36,7 +36,6 @@ impl<F: DistanceFalloff> LightSource for PointLight<F> {
 	    
 	    let cast = cast::shoot_ray_at_objects(&to_light_ray,
 						  objects,
-						  &step_away,
 						  1000,
 						  dist);
 	    match cast {
