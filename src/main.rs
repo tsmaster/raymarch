@@ -153,6 +153,8 @@ fn main() {
 	fov: 60.0,
 };*/
 
+    /* 
+    // Isometric Camera
     let cam = cameras::orthographic::OrthoCamera {
 	posn: //camera_posn,
 	Vec3f {
@@ -167,6 +169,24 @@ fn main() {
 	    z: 2.0
 	},
 	world_up: Vec3f::UP,
+	world_width: 24.0
+}; */
+
+    // Ortho
+    let cam = cameras::orthographic::OrthoCamera {
+	posn: //camera_posn,
+	Vec3f {
+	    x: 0.0,
+	    y: 0.0,
+	    z: 20.0
+	},
+	look_at: //look_posn,
+	Vec3f {
+	    x: 0.0,
+	    y: 0.0,
+	    z: 2.0
+	},
+	world_up: Vec3f::EAST,
 	world_width: 24.0
     };
 

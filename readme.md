@@ -7,7 +7,6 @@ and have fun making computer graphics.
 
 - Define scenes in JSON
 - More geom primitives
-  - triangle mesh
   - capped cone
   - teapot?
     - bezier patch
@@ -46,8 +45,7 @@ and have fun making computer graphics.
 - simplex(?) noise https://docs.rs/noise/latest/noise/
 - fog
 - GLTF loading
-  - e.g. Kenney.nl's car kit: https://www.kenney.nl/assets/car-kit
-  - probably using https://crates.io/crates/gltf
+  - handle triangle vertex normals
 - add colors from Crayola crayon boxes
   - wikipedia https://en.wikipedia.org/wiki/List_of_Crayola_crayon_colors
 - material texture support (e.g. for posters, decals)
@@ -58,6 +56,8 @@ and have fun making computer graphics.
 - jenga blocks
   - 1.5cm x 2.5cm x 7.5cm
   - wood (above)
+- other building blocks, including 2x4x1 blocks with semi-circle cuts
+  for arches, bridges
 - soft shadows
 - revisit sky
   - just a shader?
@@ -66,6 +66,7 @@ and have fun making computer graphics.
   - trees
 - support RGBA output
   - useful when rendering without a sky
+  - useful when rendering sprites for 2d games
 - fancy selector shaders
   - select based on 3 x y z hat vectors dotted with normal
   - select based on 6 x y z hat vectors dotted with normal
@@ -85,10 +86,6 @@ and have fun making computer graphics.
   - randomized
 - fractal landscape https://iquilezles.org/articles/fbmsdf/
   - https://www.shadertoy.com/view/Ws3XWl
-- Bounding Volume Hierarchy (BVH)
-  - automatically split mesh into
-    - roughly equal number of triangles
-    - roughly equal size bounding volumes
 - interpolate normals over triangle mesh
   - https://codeplea.com/triangular-interpolation
 - GPU support?
@@ -101,6 +98,19 @@ and have fun making computer graphics.
 - benchmark tests
   - https://doc.rust-lang.org/1.16.0/book/benchmark-tests.html
   - https://github.com/elalfer/rust-performance-timing
+- cone tracing for hierarchical performance improvement
+- cone/beam bounds turned into world bounds at the point of collision,
+  for more informed shading.
+  - e.g. a checkerboard shader fading to an average color to reduce
+    high frequency aliasing
+- isometric sample scenes
+  - zaxxon
+  - marble madness
+  - the marble madness of Hamlet, marble prince of Elsinore, a marble
+    castle
+    - maybe look at Kronborg Castle in Helsingør, Denmark
+
+    
 
 ## Done
 
@@ -118,6 +128,7 @@ and have fun making computer graphics.
     - infinite
     - capped
   - capsule    
+  - triangle mesh
 - multi-threading
 - normals from SDF for shading
 - add colors from XKCD color survey https://blog.xkcd.com/2010/05/03/color-survey-results/
@@ -140,6 +151,14 @@ and have fun making computer graphics.
   - union
   - difference
   - intersection
+- GLTF loading
+  - handle triangle vertex normals
+  - e.g. Kenney.nl's car kit: https://www.kenney.nl/assets/car-kit
+  - using easy-gltf
+- Bounding Volume Hierarchy (BVH)
+  - automatically split mesh into
+    - roughly equal number of triangles
+    - roughly equal size bounding volumes
 
 
 ## References
