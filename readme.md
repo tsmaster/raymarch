@@ -470,3 +470,101 @@ which knocked things down to around 19 seconds, still an improvement,
 but not as much as I had hoped for.
 
 
+### October 9, 2022
+
+Spent a chunk of time thinking about using "Hierarchical Cone
+Tracing", based on 
+http://www.fulcrum-demo.org/wp-content/uploads/2012/04/Cone_Marching_Mandelbox_by_Seven_Fulcrum_LongVersion.pdf
+
+There are several bits in that slide deck / presentation that make
+sense, and a few claims that I'm not sure that I agree with. But I can
+play around with it and see if I agree.
+
+Two claims that I want to poke at:
+
+1) Subdividing must be powers of 2 so that new rays are continuations
+of old rays. I think that this is inaccurate in a few ways. If the new
+resolution is an integer (erm, new = (old - 1) * k + 1, maybe?)
+multiple of the old resolution, maybe things line up fine, and you
+might as well do 2 as anything else, maybe. Also, maybe lining up
+isn't as important as presented in the slide deck, so long as you use
+the minimum of your "parent" rays to determine your initial depth.
+
+2) The slide deck says that you can't use this to do reflection or
+shadow rays. I think maybe you can, but you'd have to rearrange your
+recursive evaluation, which is maybe OK. TBD.
+
+
+Related to the cone marching idea, I've wanted to make orthographic
+and isometric cameras, in part as an experiment, in part as an actual
+feature (TODO render a Zaxxon scene, a Marble Madness scene...). In
+the context of cone tracing, orthographic views don't have beams that
+expand out like cones through each pixel, the beams are uniform
+cylinders extending to infinity. Not a huge deal for ray marching:
+
+
+But if/when I do the "cone marching", the cones will be defined by a
+getWidthAtDistance(d) method, which will increase linearly with
+distance: w = k * d for a perspective camera and will remain constant:
+w = k for an orthographic camera.
+
+
+An unrelated cool thing about cone marching is that it can be useful
+when trying to do antialiasing in shader code. It's possible to
+project pixel bounds forward into the scene at a distant point,
+determine that the world bounds are large relative to
+e.g. checkerboard values, and thus just return an average color.
+
+
+Thinking about the GLTF car that I've been working on - the
+performance remains not as good as I want, and one realization
+occurred to me - I can still benefit from more structure, even more
+than the BVH structure has been giving me.
+
+When I import the car, I get 16 separate meshes (different materials,
+separate wheels...), which I proceed to split based on the long
+dimension (the car is about 4x as long as it is high, so I separate
+the triangles into 4 buckets, based on where the centroid(?) of the
+triangle lies in Y, relative to the bounding box of the whole
+body. This provides some sorting benefit, and if a near triangle is
+visited early in the scene traversal, it might prune later chunks of
+the body BVH from being traversed.
+
+Maybe.
+
+Turns out, I store these children in increasing Y, so, nose to tail,
+but there's nothing special about that. Also, these buckets have a lot
+of overlap, which is not surprising for splitting up a mesh of
+triangles - the seam is going to be jagged and gross.
+
+So, hitting an early triangle might help prune later buckets, but
+probably only if I'm looking at the car from the vicinity of the
+nose. (I haven't.) If I'm looking from the side, I'll probably have to
+visit all the buckets. If I'm looking from the back, and again, my
+buckets are stored and visited from the nose first proceeding to the
+back, this means that I'm going to visit everything in the whole mesh,
+moving towards the camera (painter's algorithm).
+
+A Spatial Partition (see
+https://gameprogrammingpatterns.com/spatial-partition.html) might be
+employed to query a scene to find things in a finite query volume. In
+my case, I would be doing well to walk the scene in approximate
+nearest to furthest distance to increase the likelihood that I'll find
+a nearby hit, and then the hierarchy of the BVH can leverage that to
+prune out complexity that I don't need.
+
+I could add something like an octree or a binary space partition, each
+of which would allow me to traverse the objects in order, front to
+back. Sub-objects might still use BVHs to enclose the geometry to
+provide for better pruning.
+
+Even simpler than an octree might be a grid, choosing traversal order
+based on a dot product with the view vector.
+
+One thing where my brain is saying "sure, BSPs etc work with finite
+geometry, but you've got an infinite ground plane, how will that
+work?". Yes, good job, brain, you're right. So I don't stick infinite
+stuff into my grid or my octree, but I stick infinite things in a
+separate list. There won't be a lot of them, and being infinite, maybe
+it makes sense to visit them first.
+
