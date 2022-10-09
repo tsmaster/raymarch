@@ -27,9 +27,9 @@ pub fn shoot_ray_at_objects(r: &Ray,
 	    let (obj, _) = &obj_list[obj_idx];
 
 	    let obj_bound = obj.bound(&cur_pos);
-	    match (obj_bound) {
+	    match obj_bound {
 		Some(bound_dist) => {
-		    if (bound_dist > best_dist) {
+		    if bound_dist > best_dist {
 			continue;
 		    }
 		},

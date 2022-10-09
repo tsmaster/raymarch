@@ -1,6 +1,7 @@
 // geom/mod.rs
 
 pub mod capsule;
+pub mod container;
 pub mod cubebox;
 pub mod cylinder;
 pub mod plane;

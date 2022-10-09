@@ -15,7 +15,7 @@ use crate::geom::cylinder::CylinderInfiniteZ;
 use crate::geom::plane::ZPlusPlane;
 use crate::geom::sphere::Sphere;
 use crate::geom::torus::Torus;
-use crate::geom::triangle_mesh::TriangleMesh;
+use crate::geom::triangle_mesh::{TriangleMesh, TriangleBucket};
 use crate::geom::translate::OpTranslate;
 use crate::lights::ambient::AmbientLight;
 use crate::lights::cone::ConeLight;
@@ -693,11 +693,15 @@ pub fn add_car_object(sb: &mut scene::SceneBuilder) {
 fn walk_scene(scene: &easy_gltf::Scene, sb: &mut scene::SceneBuilder) {
     println!("num models {}", &scene.models.len());
 
-    for model in &scene.models {
-	walk_model(&model, sb);
+    let ONLY_BODY:bool = false;
+
+    if !ONLY_BODY {
+	for model in &scene.models {
+	    walk_model(&model, sb);
+	}
+    } else {
+	walk_model(&scene.models[1], sb);
     }
-    
-    //walk_model(&scene.models[1], sb);
 
     for _camera in &scene.cameras {
 	println!("camera");
@@ -717,8 +721,10 @@ fn walk_model(model: &easy_gltf::model::Model, sb: &mut scene::SceneBuilder) {
 	triangles: vec!(),
 };*/
 
+    let mut tri_bucket = TriangleBucket::new();
+    
 
-    let mut trimesh = TriangleMesh::new();    
+    //let mut trimesh = TriangleMesh::new();    
     
     println!("mode: {:?}", model.mode());
     println!("vert count {}", model.vertices().len());
@@ -731,10 +737,12 @@ fn walk_model(model: &easy_gltf::model::Model, sb: &mut scene::SceneBuilder) {
 	    match model.triangles() {
 		Ok(triangles) => {
 		    println!("triangle count {}", triangles.len());
-		    insert_triangles(&triangles, &mut trimesh);
+		    insert_triangles(&triangles, &mut tri_bucket);
 		},
 		Err(badmode) => {println!("bad mode: {:?}", badmode);}
 	    };
+
+	    tri_bucket.subdivide_box(600, 1.0, 10);
 	},
 	_ => {}
     };
@@ -743,10 +751,14 @@ fn walk_model(model: &easy_gltf::model::Model, sb: &mut scene::SceneBuilder) {
     //println!("model has tex coords? {}", if model.has_tex_coords() { "true" } else { "false"});
     //println!("---end model---");
 
-    trimesh.bake();
-    
-    sb.add_object(Box::new(trimesh),
+    //trimesh.bake();
+
+    sb.add_object(TriangleMesh::make_tm_tree_from_triangle_bucket(tri_bucket),
 		  Box::new(mat));
+
+    /*
+    sb.add_object(Box::new(trimesh),
+		  Box::new(mat));*/
 }
 
 fn visit_material(mat: Arc<easy_gltf::model::Material>) -> impl crate::shaders::shader::Shader {
@@ -809,12 +821,32 @@ fn visit_material(mat: Arc<easy_gltf::model::Material>) -> impl crate::shaders::
     //println!("----- end Material -----");
 }
 
-fn insert_triangles(triangles: &Vec<easy_gltf::model::Triangle>, tri_mesh: &mut TriangleMesh) {
+fn insert_triangles(triangles: &Vec<easy_gltf::model::Triangle>,
+		    tri_bucket: &mut TriangleBucket) {
     for t in triangles {
-	println!("triangle");
+	//println!("triangle");
 	for vi in 0..3 {
 	    //println!("  vert {}", vi);
-	    visit_vertex(&t[vi]);
+	    //visit_vertex(&t[vi]);
+	}
+
+	let dbg_scale = 8.0;
+	
+	let v0 = make_vec_from_vertex(&t[0]) * dbg_scale;
+	let v1 = make_vec_from_vertex(&t[1]) * dbg_scale;
+	let v2 = make_vec_from_vertex(&t[2]) * dbg_scale;
+
+	tri_bucket.add_tri(&[v0, v1, v2]);
+    }
+}
+
+/*
+fn insert_triangles(triangles: &Vec<easy_gltf::model::Triangle>, tri_mesh: &mut TriangleMesh) {
+    for t in triangles {
+	//println!("triangle");
+	for vi in 0..3 {
+	    //println!("  vert {}", vi);
+	    //visit_vertex(&t[vi]);
 	}
 
 	let dbg_scale = 8.0;
@@ -825,11 +857,11 @@ fn insert_triangles(triangles: &Vec<easy_gltf::model::Triangle>, tri_mesh: &mut 
 
 	tri_mesh.triangles.push([v0, v1, v2]);
     }
-}
+}*/
 
 fn visit_vertex(vert: &easy_gltf::model::Vertex) {
 
-    println!("pos {:?}", vert.position);
+//    println!("pos {:?}", vert.position);
 /*    println!("norm {:?}", vert.normal);
     //println!("tangent {:?}", vert.tangent);
     println!("tex_coords {:?}", vert.tex_coords);*/

@@ -89,6 +89,18 @@ and have fun making computer graphics.
   - automatically split mesh into
     - roughly equal number of triangles
     - roughly equal size bounding volumes
+- interpolate normals over triangle mesh
+  - https://codeplea.com/triangular-interpolation
+- GPU support?
+  - https://github.com/calebwin/emu
+  - https://github.com/Rust-GPU/Rust-CUDA
+  - https://github.com/EmbarkStudios/rust-gpu
+  - https://www.reddit.com/r/rust/comments/fx0tbt/rust_on_gpu/
+- motion blur
+  - time-extended transformations
+- benchmark tests
+  - https://doc.rust-lang.org/1.16.0/book/benchmark-tests.html
+  - https://github.com/elalfer/rust-performance-timing
 
 ## Done
 
@@ -432,5 +444,29 @@ I think that looks cool, but there are several pieces that remain:
       volume at each node of my tree that has the least volume, but
       contains all of my data. I anticipate that this should not be
       difficult, and hopefully, should give good performance results.
+
+
+### October 8, 2022
+
+Following up the above ideas, I've done the following:
+
+ - precomputed mesh data and moved the square root out of the
+   individual triangle computation.
+
+ - broken down triangle meshes into smaller pieces, each with a
+   bounding box.
+
+Aaaand, the results are not super encouraging. A 400x400 render of the
+Kenney.nl "future racer" GLTF model takes ~20 seconds to render. I
+added profiling using coz:
+
+https://github.com/plasma-umass/coz/tree/master/rust
+
+cos run --- ./target/release/raymarch -r 400x400
+
+and that gives me a hotspot list, telling me which functions are
+called more than others. I rewrote my clamp function to be one line,
+which knocked things down to around 19 seconds, still an improvement,
+but not as much as I had hoped for.
 
 

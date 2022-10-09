@@ -37,14 +37,6 @@ impl Vec3f {
 	}
     }
 
-    pub fn max(self, o:f32) -> Vec3f {
-	Vec3f {
-	    x: f32::max(self.x, o),
-	    y: f32::max(self.y, o),
-	    z: f32::max(self.z, o)
-	}
-    }
-
     pub fn cross(self, o:&Vec3f) -> Vec3f {
 	let x = self.y * o.z - self.z * o.y;
 	let y = self.z * o.x - self.x * o.z;
@@ -94,6 +86,22 @@ impl Vec3f {
 	let ratio = num / denom;
 	ratio.acos()
     }
+
+    pub fn min(self, o:&Vec3f) -> Vec3f {
+	Vec3f{
+	    x: f32::min(self.x, o.x),
+	    y: f32::min(self.y, o.y),
+	    z: f32::min(self.z, o.z)
+	}
+    }
+
+    pub fn max(self, o:&Vec3f) -> Vec3f {
+	Vec3f{
+	    x: f32::max(self.x, o.x),
+	    y: f32::max(self.y, o.y),
+	    z: f32::max(self.z, o.z)
+	}
+    }    
 }
 
 impl Add for Vec3f {
@@ -238,13 +246,7 @@ where
 
 
 pub fn clamp(v: f32, min: f32, max: f32) -> f32 {
-    if v <= min {
-	return min;
-    } else if v >= max {
-	return max;
-    }
-
-    v
+    f32::min(f32::max(v, min), max)
 }
 
 pub fn sign(v: f32) -> f32 {
