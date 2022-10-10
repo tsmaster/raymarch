@@ -4,7 +4,6 @@ This is a simple raymarcher, built as an exercise to teach myself Rust
 and have fun making computer graphics.
 
 ## TODO
-
 - Define scenes in JSON
 - More geom primitives
   - teapot?
@@ -53,9 +52,6 @@ and have fun making computer graphics.
 - "scene" container for lights, renderable objects
   - loadable from JSON, above
 - cmdline arg for JSON filename
-- jenga blocks
-  - 1.5cm x 2.5cm x 7.5cm
-  - wood (above)
 - other building blocks, including 2x4x1 blocks with semi-circle cuts
   for arches, bridges
 - soft shadows
@@ -104,17 +100,22 @@ and have fun making computer graphics.
   for more informed shading.
   - e.g. a checkerboard shader fading to an average color to reduce
     high frequency aliasing
+- tagging of "layers" to enable rendering car counter sprites
+  - render the body first, with no ground plane, with alpha skybox
+  - render the ground underneath to get (soft?) shadows, but with the
+    car geometry flagged as only visible to shadows
+  - save both as RGBA images     
+### Scene Ideas
+- jenga blocks
+  - 1.5cm x 2.5cm x 7.5cm
+  - wood (above)
 - isometric sample scenes
   - zaxxon
   - marble madness
   - the marble madness of Hamlet, marble prince of Elsinore, a marble
     castle
     - maybe look at Kronborg Castle in Helsingør, Denmark
-- tagging of "layers" to enable rendering car counter sprites
-  - render the body first, with no ground plane, with alpha skybox
-  - render the ground underneath to get (soft?) shadows, but with the
-    car geometry flagged as only visible to shadows
-  - save both as RGBA images     
+
 
 ## Done
 
