@@ -601,7 +601,11 @@ Added a "capped cone" primitive (it's been sitting near the top of my
 TODO list for a while) and an "infinite cone" primitive (it was nearby
 on Inigo's SDF page).
 
+![crayon_box_2022_10_10](https://user-images.githubusercontent.com/72338/194900083-76683435-8f05-4421-abea-0180c3f90806.png)
 
+That is, of course, capped cones plus cylinders to get recognizeable
+crayon shapes.
+  
 
 I've been thinking about rendering ortho ("plan") views of cars to
 make 2d sprites, but what'd be really fancy is automatically rendering
