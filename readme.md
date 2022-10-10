@@ -7,7 +7,6 @@ and have fun making computer graphics.
 
 - Define scenes in JSON
 - More geom primitives
-  - capped cone
   - teapot?
     - bezier patch
     - http://www.holmes3d.net/graphics/teapot/
@@ -40,6 +39,7 @@ and have fun making computer graphics.
   - glass (refraction)
   - BRDF (there are a few databases of materials out there, would be cool to support them)
     - https://en.wikipedia.org/wiki/Bidirectional_reflectance_distribution_function
+    - https://www.scratchapixel.com/lessons/3d-basic-rendering/phong-shader-BRDF?url=3d-basic-rendering/phong-shader-BRDF 
   - BSDF - surface descriptions including BRDF (reflection) and BTDF (transmission)
     - https://math.hws.edu/graphicsbook/c8/s2.html
 - simplex(?) noise https://docs.rs/noise/latest/noise/
@@ -64,6 +64,7 @@ and have fun making computer graphics.
   - implement star map
   - maybe a city skyline
   - trees
+  - https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/simulating-sky
 - support RGBA output
   - useful when rendering without a sky
   - useful when rendering sprites for 2d games
@@ -109,8 +110,11 @@ and have fun making computer graphics.
   - the marble madness of Hamlet, marble prince of Elsinore, a marble
     castle
     - maybe look at Kronborg Castle in Helsingør, Denmark
-
-    
+- tagging of "layers" to enable rendering car counter sprites
+  - render the body first, with no ground plane, with alpha skybox
+  - render the ground underneath to get (soft?) shadows, but with the
+    car geometry flagged as only visible to shadows
+  - save both as RGBA images     
 
 ## Done
 
@@ -129,6 +133,7 @@ and have fun making computer graphics.
     - capped
   - capsule    
   - triangle mesh
+  - capped cone
 - multi-threading
 - normals from SDF for shading
 - add colors from XKCD color survey https://blog.xkcd.com/2010/05/03/color-survey-results/
@@ -589,3 +594,19 @@ stuff into my grid or my octree, but I stick infinite things in a
 separate list. There won't be a lot of them, and being infinite, maybe
 it makes sense to visit them first.
 
+
+# October 10, 2022
+
+Added a "capped cone" primitive (it's been sitting near the top of my
+TODO list for a while) and an "infinite cone" primitive (it was nearby
+on Inigo's SDF page).
+
+
+
+I've been thinking about rendering ortho ("plan") views of cars to
+make 2d sprites, but what'd be really fancy is automatically rendering
+the car and the shadow as separate objects. I think I can do that in
+JSON by having the car body be a thing and a background as a separate
+thing. I'd render the car body with shadows, without the background to
+get the body, and then I'd render the background and the car body, but
+the car body would be flagged as "shadows only".

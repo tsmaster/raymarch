@@ -164,6 +164,25 @@ impl Vec2f {
 	    y: f32::max(self.y, v)
 	}	
     }
+
+    pub fn dot(self, o:&Vec2f) -> f32 {
+	self.x * o.x + self.y * o.y
+    }
+
+    pub fn dot2(self) -> f32 {
+	self.x * self.x + self.y * self.y
+    }
+}
+
+impl Add for Vec2f {
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self::Output {
+	Self {
+	    x: self.x + other.x,
+	    y: self.y + other.y
+	}
+    }
 }
 
 impl Sub for Vec2f {
@@ -176,6 +195,18 @@ impl Sub for Vec2f {
 	}
     }
 }
+
+impl Mul<f32> for Vec2f {
+    type Output = Self;
+
+    fn mul(self, s:f32) -> Self {
+	Self {
+	    x: self.x * s,
+	    y: self.y * s
+	}
+    }
+}
+
 
 
 

@@ -7,6 +7,7 @@ use std::sync::Arc;
 // TODO clean this up
 use crate::bdg_color::ColorRgbF;
 use crate::geom::capsule::Capsule;
+use crate::geom::cone::CappedCone;
 use crate::geom::cubebox::CubeBox;
 use crate::geom::cylinder::{CylinderCappedY, CylinderCappedZ};
 use crate::geom::cylinder::CylinderInfiniteX;
@@ -970,4 +971,185 @@ pub fn add_cube_glv_object(sb: &mut scene::SceneBuilder) {
 	walk_scene(&scene, sb);
     }
 }
+
+
+pub fn add_capped_cone_object(sb: &mut scene::SceneBuilder) {
+    let cone_posn = Vec3f {
+	x: 0.0,
+	y: 0.0,
+	z: 0.6
+    };
+    let cone = CappedCone {
+	height: 1.0,
+	radius_1: 0.4,
+	radius_2: 0.2,
+    };
+    
+    sb.add_object(Box::new(OpTranslate {
+	v: Vec3f {
+	    x: 0.0,
+	    y: 0.0,
+	    z: 3.0
+	},
+	primitive: Box::new(cone)
+    }),
+		  Box::new(SpecularShader {
+		      ambient_color: ColorRgbF::CRAYOLA_CARNATION_PINK,
+		      diffuse_color: ColorRgbF::CRAYOLA_CARNATION_PINK,
+		      specular_color: ColorRgbF::CRAYOLA_CARNATION_PINK,
+		      specular_power: 6.0
+		  }
+		  ));	
+}
+
+pub fn add_crayon_object(sb: &mut scene::SceneBuilder, color: ColorRgbF) {
+
+    // total len = 3.6
+    // diameter = 0.3
+    // tip len = 0.3
+    // tip major diameter = 0.2
+    // tip minor diameter = 0.1
+
+    let total_len = 3.6;
+    let diameter = 0.3;
+    let tip_len = 0.3;
+    let tip_major_diameter = 0.2;
+    let tip_minor_diameter = 0.1;
+
+    // derived dimensions
+
+    let radius = diameter / 2.0;
+    let body_len = total_len - tip_len;
+    let tip_major_radius = tip_major_diameter / 2.0;
+    let tip_minor_radius = tip_minor_diameter / 2.0;
+
+    // TODO probably should OpUnion these
+    
+    let cone_posn = Vec3f {
+	x: 0.0,
+	y: 0.0,
+	z: body_len + tip_len / 2.0
+    };
+    let cone = CappedCone {
+	height: tip_len,
+	radius_1: tip_major_radius,
+	radius_2: tip_minor_radius,
+    };
+    
+    sb.add_object(Box::new(OpTranslate {
+	v: cone_posn,
+	primitive: Box::new(cone)
+    }),
+		  Box::new(SpecularShader {
+		      ambient_color: color,
+		      diffuse_color: color,
+		      specular_color: color,
+		      specular_power: 6.0
+		  }
+		  ));
+
+    sb.add_object(Box::new(OpTranslate {
+	v: Vec3f {
+	    x: 0.0,
+	    y: 0.0,
+	    z: body_len / 2.0
+	},
+	primitive: Box::new(CylinderCappedZ {
+	    h: body_len,
+	    r: radius,
+	}
+	)
+    }),
+		  Box::new(SpecularShader {
+		      ambient_color: color,
+		      diffuse_color: color,
+		      specular_color: color,
+		      specular_power: 6.0
+		  }
+		  ));
+}
+
+
+
+pub fn add_crayon_object_at_loc(sb: &mut scene::SceneBuilder, color: ColorRgbF, loc: Vec3f) {
+
+    // total len = 3.6
+    // diameter = 0.3
+    // tip len = 0.3
+    // tip major diameter = 0.2
+    // tip minor diameter = 0.1
+
+    let total_len = 3.6;
+    let diameter = 0.3;
+    let tip_len = 0.3;
+    let tip_major_diameter = 0.2;
+    let tip_minor_diameter = 0.1;
+
+    // derived dimensions
+
+    let radius = diameter / 2.0;
+    let body_len = total_len - tip_len;
+    let tip_major_radius = tip_major_diameter / 2.0;
+    let tip_minor_radius = tip_minor_diameter / 2.0;
+
+    // TODO probably should OpUnion these
+    
+    let cone_posn = Vec3f {
+	x: loc.x,
+	y: loc.y,
+	z: loc.z + body_len + tip_len / 2.0
+    };
+    let cone = CappedCone {
+	height: tip_len,
+	radius_1: tip_major_radius,
+	radius_2: tip_minor_radius,
+    };
+    
+    sb.add_object(Box::new(OpTranslate {
+	v: cone_posn,
+	primitive: Box::new(cone)
+    }),
+		  Box::new(SpecularShader {
+		      ambient_color: color,
+		      diffuse_color: color,
+		      specular_color: color,
+		      specular_power: 6.0
+		  }
+		  ));
+
+    sb.add_object(Box::new(OpTranslate {
+	v: Vec3f {
+	    x: loc.x,
+	    y: loc.y,
+	    z: loc.z + body_len / 2.0
+	},
+	primitive: Box::new(CylinderCappedZ {
+	    h: body_len,
+	    r: radius,
+	}
+	)
+    }),
+		  Box::new(SpecularShader {
+		      ambient_color: color,
+		      diffuse_color: color,
+		      specular_color: color,
+		      specular_power: 6.0
+		  }
+		  ));
+}
+
+
+pub fn add_crayon_box_8_objects(sb: &mut scene::SceneBuilder) {
+    add_crayon_object_at_loc(sb, ColorRgbF::CRAYOLA_WHITE, Vec3f{x: 0.0, y: -2.0, z: 0.0});
+    add_crayon_object_at_loc(sb, ColorRgbF::CRAYOLA_RED, Vec3f{x: 0.0, y: -1.5, z: 0.0});
+    add_crayon_object_at_loc(sb, ColorRgbF::CRAYOLA_ORANGE, Vec3f{x: 0.0, y: -1.0, z: 0.0});
+    add_crayon_object_at_loc(sb, ColorRgbF::CRAYOLA_YELLOW, Vec3f{x: 0.0, y: -0.5, z: 0.0});
+    add_crayon_object_at_loc(sb, ColorRgbF::CRAYOLA_GREEN, Vec3f{x: 0.0, y: 0.0, z: 0.0});
+    add_crayon_object_at_loc(sb, ColorRgbF::CRAYOLA_BLUE, Vec3f{x: 0.0, y: 0.5, z: 0.0});
+    add_crayon_object_at_loc(sb, ColorRgbF::CRAYOLA_PURPLE, Vec3f{x: 0.0, y: 1.0, z: 0.0});
+    add_crayon_object_at_loc(sb, ColorRgbF::CRAYOLA_BLACK, Vec3f{x: 0.0, y: 1.5, z: 0.0});
+}
+
+
+
 

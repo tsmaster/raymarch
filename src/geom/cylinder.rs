@@ -93,7 +93,7 @@ impl SDF for CylinderCappedZ {
 
 	let hr = Vec2f {
 	    x: self.r,
-	    y: self.h
+	    y: self.h / 2.0
 	};
 
 	let xy = Vec2f {

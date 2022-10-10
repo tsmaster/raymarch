@@ -145,13 +145,12 @@ fn main() {
 	z: 1.0
     };
 
-    /*
     let cam = cameras::perspective::PerspectiveCamera{
 	posn: camera_posn,
 	look_at: look_posn,
 	up: Vec3f::UP,
 	fov: 60.0,
-};*/
+    };
 
     /* 
     // Isometric Camera
@@ -173,6 +172,7 @@ fn main() {
 }; */
 
     // Ortho
+    /*
     let cam = cameras::orthographic::OrthoCamera {
 	posn: //camera_posn,
 	Vec3f {
@@ -188,7 +188,7 @@ fn main() {
 	},
 	world_up: Vec3f::EAST,
 	world_width: 24.0
-    };
+    };*/
 
     let sky_box = sky::SkySphere {
 
@@ -201,18 +201,21 @@ fn main() {
     scene::test_scenes::add_graphpaper_5_floor(&mut sb);
     //scene::test_scenes::add_turbulent_floor(&mut sb);
     //scene::test_scenes::add_marble_floor(&mut sb);
-    scene::test_scenes::add_three_dir_lights(&mut sb);
-    //scene::test_scenes::add_point_light(&mut sb);
+    //scene::test_scenes::add_three_dir_lights(&mut sb);
+    scene::test_scenes::add_point_light(&mut sb);
     //scene::test_scenes::add_cone_light(&mut sb);
     //scene::test_scenes::add_ring_of_spheres_objects(&mut sb);
     //scene::test_scenes::add_single_sphere_object(&mut sb);
     //scene::test_scenes::add_single_marble_sphere_object(&mut sb);
     //scene::test_scenes::add_crayola_crayon_spheres_objects(&mut sb);
     //scene::test_scenes::add_disc_with_holes_objects(&mut sb);
-    scene::test_scenes::add_car_object(&mut sb);
+    //scene::test_scenes::add_car_object(&mut sb);
     //scene::test_scenes::add_cube_object(&mut sb);
     //scene::test_scenes::add_cube_gltf_object(&mut sb);
     //scene::test_scenes::add_cube_glb_object(&mut sb);
+    //scene::test_scenes::add_capped_cone_object(&mut sb);
+    //scene::test_scenes::add_crayon_object(&mut sb, ColorRgbF::CRAYOLA_RED);
+    scene::test_scenes::add_crayon_box_8_objects(&mut sb);
 
     let scene = scene::build_scene(sb);
 
