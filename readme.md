@@ -21,6 +21,7 @@ and have fun making computer graphics.
   - geom
   - lights
   - colors
+  - shaders
 - documentation
 - materials
   - matte (see RMC p 334)
@@ -104,7 +105,8 @@ and have fun making computer graphics.
   - render the body first, with no ground plane, with alpha skybox
   - render the ground underneath to get (soft?) shadows, but with the
     car geometry flagged as only visible to shadows
-  - save both as RGBA images     
+  - save both as RGBA images
+  
 ### Scene Ideas
 - jenga blocks
   - 1.5cm x 2.5cm x 7.5cm
@@ -115,7 +117,10 @@ and have fun making computer graphics.
   - the marble madness of Hamlet, marble prince of Elsinore, a marble
     castle
     - maybe look at Kronborg Castle in Helsingør, Denmark
-
+- glass of water (or colored liquid) with ice cube(s)
+- chess set, one side frosted, one side polished glass
+- zaxxon castle
+- marble madness castle
 
 ## Done
 
