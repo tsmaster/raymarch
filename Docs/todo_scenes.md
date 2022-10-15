@@ -4,7 +4,7 @@ A brainstorming doc of scenes that would be fun to make
 
 - stained glass window temple
 - first person dungeon crawl
-- chess board
+- chess board(s)
   - glossy black (obsidian) vs glossy white
   - clear glass vs frosted glass
   - marble red vs marble blue
@@ -21,3 +21,7 @@ A brainstorming doc of scenes that would be fun to make
 - glass of water (or colored liquid) with ice cube(s)
 - zaxxon castle
 - marble madness castle
+- Money For Nothing https://www.turbosquid.com/3d-models/3d-x-mark-sting/1019422
+- Lego minifigs
+
+
