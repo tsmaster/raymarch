@@ -34,12 +34,24 @@
   - wood (requires noise) 
     - see RMC p350
     - see also https://docs.rs/noise/latest/noise/struct.Cylinders.html
-  - glass (refraction)
+  - glass
+    - has reflective surface
+    - has refraction internal
+    - may have frosted surface
+    - may have colored "participating media"
+    - what if: sparkles
   - BRDF (there are a few databases of materials out there, would be cool to support them)
     - https://en.wikipedia.org/wiki/Bidirectional_reflectance_distribution_function
     - https://www.scratchapixel.com/lessons/3d-basic-rendering/phong-shader-BRDF?url=3d-basic-rendering/phong-shader-BRDF 
   - BSDF - surface descriptions including BRDF (reflection) and BTDF (transmission)
     - https://math.hws.edu/graphicsbook/c8/s2.html
+  - spectrum sparkle
+    - no joke, as I've been thinking about materials, I saw a car
+      getting on 522 near my house that was mostly white, but it had
+      random sparkles (maybe one visible sparkle point per inch?)
+      which reminded me of an effect from some stickers in the 80s, or
+      even looking at a CD or DVD, where there were colors that moved
+      based on the viewing angle.
 - simplex(?) noise https://docs.rs/noise/latest/noise/
 - fog
 - GLTF loading
@@ -84,11 +96,6 @@
   - https://www.shadertoy.com/view/Ws3XWl
 - interpolate normals over triangle mesh
   - https://codeplea.com/triangular-interpolation
-- GPU support?
-  - https://github.com/calebwin/emu
-  - https://github.com/Rust-GPU/Rust-CUDA
-  - https://github.com/EmbarkStudios/rust-gpu
-  - https://www.reddit.com/r/rust/comments/fx0tbt/rust_on_gpu/
 - motion blur
   - time-extended transformations
 - benchmark tests
