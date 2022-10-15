@@ -411,7 +411,7 @@ separate list. There won't be a lot of them, and being infinite, maybe
 it makes sense to visit them first.
 
 
-# October 10, 2022
+## October 10, 2022
 
 Added a "capped cone" primitive (it's been sitting near the top of my
 TODO list for a while) and an "infinite cone" primitive (it was nearby
@@ -430,3 +430,91 @@ JSON by having the car body be a thing and a background as a separate
 thing. I'd render the car body with shadows, without the background to
 get the body, and then I'd render the background and the car body, but
 the car body would be flagged as "shadows only".
+
+
+## October 15, 2022
+
+I rearranged the markdown for this project, moving this devlog into a
+docs folder (overdue), as opposed to being in the toplevel README. I
+also split up a bunch of other stuff that used to be in the README,
+like my TODO list(s). I think it's a little too granular right now, so
+I'm thinking I'm going to scale it back a tiny bit, and see how that
+goes.
+
+Last night, I saw the Pet Shop Boys and New Order perform at the
+Climate Pledge Arena, and it was a great show. Seems like a bit of a
+non-sequitur for this dev log, and it sort of is, but behind each of
+the bands was a projection screen, and, indeed, PSB used a translucent
+screen about 2/3 of the way forward - some of their stuff was just
+Neil and Chris all the way downstage, with a mic (for Neil) and some
+sort of keyboard / display (for Chris), and two lampposts (think of
+Singin' in the Rain).
+
+Anyway, one or two projection screens, an opportunity to add visuals
+to each of their songs. To my mind, PSB did more interesting things
+visually, while New Order's visuals weren't as impressive, relying on
+presentation standards like laser projectors (several lights that do
+that fan effect, cutting through smoke), smoke, spotlights (focused on
+a rotating disco ball, not nearly as impressive as I expected.
+
+But, what I'm getting to, was that there were a number of 80s computer
+graphics visuals projected onto the screen(s).
+
+- PSB had a bunch of wireframe people walking right to left across the
+  stage, at one point, Neil walked from downstage center, to downstage
+  right, with the wireframe people marching behind him, roughly
+  synchronized. Seems simple, but it was effective. Later, there were
+  a lot more stick figures, synchonized, superimposed, so the place
+  where the feet landed had 4-5 different people, all whose feet were
+  planted at the same place.
+
+- there was some sort of a plasma fade from red to magenta to blue
+  along the near screen, as Neil slowly walked from downstage right to
+  downstage left.
+
+- this probably was New Order, there was an effect where wireframe
+  cubes (so many cubes) were superimposed on each other, translating
+  from far away (isometric projection?) towards the
+  origin. Periodically, the cubes would rotate around z (while
+  translating? Or not?)
+
+- I seem to recall this being a PSB thing, but I know New Order
+  (also?) did this: a series of nested rectangles, reminding me of a
+  hangar on the Death Star, a perspective illusion. In the middle of
+  these rectangles was a red (plasma?) planet.
+
+- moon zoom - New Order had a sequence where there was a picture of
+  the moon, with a black cloud near the center, in the middle of the
+  black cloud was a tiny little moon (maybe the black cloud was
+  supposed to be interpreted as a break in clouds? and you're seeing
+  the small moon through the clouds?) with an infinite zoom
+
+- lots of imagery of cars, from a spaghetti highway flyover, with lots
+  of headlights/taillights, to some footage from OutRun
+
+- a wireframe torus mesh, as seen from the inside - New Order had a
+  couple related sequences that were connected. One was a wireframe
+  mesh of a torus, made up of square tiles, all subdivided diagonally,
+  so it was a triangular mesh, where all the triangles were right
+  equilateral 45-45-90 triangles. Easy. But then, a variation on this
+  was to draw diagonal lines on this mesh (and not show the
+  wireframe), to get a helical effect, like threads on a screw, but if
+  the screw was the outside wall of a constantly turning tunnel. I
+  think if you were following the inside of a torus, and maybe were
+  barrel rolling the entire time as well, that'd be about the same
+  thing.
+
+- scanline - In "Opportunities", PSB had a bunch of green raster
+  lines, which didn't always obviously form images. Probably, some of
+  the sub-sequences were just abstract, probably some evoked
+  waveforms. At some point, there was a face, and there were coins. 
+
+- streetlamps - the streetlamps on stage also were echoed in a visual
+  sequence, repeating off into the distance (not to infinity, that'd
+  be out of control?). There were some moments within this where
+  various lights would toggle on and off, in various patterns (mostly
+  odd/even in a slow chase IIRC).
+
+
+I mention all of these sequences, these images as inspirations for my
+own creations. 
